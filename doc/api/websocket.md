@@ -94,7 +94,7 @@
             "desc": "处理完成"
             }
             ```
-            
+        
     - /ws/group/add
     
         - 请求
@@ -259,6 +259,29 @@
         ```json
         {
           "eventType": "forced_logout",
+          "fromUserId": "fromUserId",
+          "toUserId": "toUserId",
+          "time": 1534417492018
+        }
+        ```
+        
+    - group_add
+    
+        ```json
+        {
+          "data": {
+              "groupApplyId": "申请id",
+              "groupId": "申请加入群id",
+              "groupNickname": "群昵称",
+              "groupName": "群帐号",
+              "groupHeadImg": "群头像",
+              "userId": "申请人uerId",
+              "nickname": "用户昵称",
+              "headImg": "用户头像",
+              "username": "用户帐号",
+              "remark": "申请备注"
+          },
+          "eventType": "group_add",
           "fromUserId": "fromUserId",
           "toUserId": "toUserId",
           "time": 1534417492018
