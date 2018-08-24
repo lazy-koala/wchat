@@ -12,6 +12,7 @@
     /ws/friend/add | 请求添加指定用户为好友
     /ws/friend/add_reply | 处理好友申请
     /ws/friend/del | 删除好友
+    /ws/group/add | 申请加入群组
     
 - 请求参数格式 ( * 表示该属性必传)
 
@@ -86,14 +87,32 @@
             }
             ```
         - 响应  
-            
+          
             ```json
             {
             "code": "0000",
             "desc": "处理完成"
             }
             ```
-
+            
+    - /ws/group/add
+    
+        - 请求
+          
+            ```json
+            {
+            "groupId": "* 申请的群组id",
+            "remark": "申请备注"
+            }
+            ```
+        - 响应  
+          
+            ```json
+            {
+            "code": "0000",
+            "desc": "处理完成"
+            }
+            ```
 
 - 响应错误码 
 
@@ -109,6 +128,9 @@
    0103 | 已经是你的好友 |
    0104 | 不能添加自己 |
    0105 | 已经发送过好友申请 |
+   0201 | 不存在的群组信息 |
+   0202 | 已经加入该群 |
+   0203 | 已经发送过入群申请 |
    
 ---
 > #### 事件通知
@@ -133,6 +155,7 @@
     拒绝入群 | group_add_refused | 拒绝申请入群
     同意邀请入群 | group_invite_agree | 通过入群邀请
     拒绝入群邀请 | group_invite_refused | 
+    强制登出 | forced_logout | 异地登录强制退出
 
 - 事件通知参数格式
 
@@ -211,7 +234,7 @@
             "status": "1-上线 0-离线",
             "headImg": "/**/*.png",
             "nickname": "Acexy",
-            "remark": "加好友~",
+            "remark": "好友备注名",
             "username": "acexy"
           },
           "eventType": "friend_status_change",
@@ -226,6 +249,16 @@
         ```json
         {
           "eventType": "friend_deleted",
+          "fromUserId": "fromUserId",
+          "toUserId": "toUserId",
+          "time": 1534417492018
+        }
+        ```
+    - forced_logout
+    
+        ```json
+        {
+          "eventType": "forced_logout",
           "fromUserId": "fromUserId",
           "toUserId": "toUserId",
           "time": 1534417492018
