@@ -13,3 +13,17 @@ Browser <---------> WebSocket
   V                      V
  HTTP   -----------> MongoDB
 ```
+- vue
+  ```
+  UI WEB展示层
+  ```
+
+- node
+  ```
+  提供HTTP服务及业务处理
+  ```
+  
+- java
+  ```
+  提供WebSocket服务及业务处理
+  ```
