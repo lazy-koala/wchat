@@ -5,7 +5,7 @@
 ![java](https://img.shields.io/badge/-java-green.svg)
 ![websocket](https://img.shields.io/badge/-websocket-lightred.svg)
 ---
-> ### 基于WebScoket的即使IM聊天 
+> ### 基于WebScoket的及时IM聊天工具 
 ```
 Browser <---------> WebSocket
   |	                 |
