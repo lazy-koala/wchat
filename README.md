@@ -6,7 +6,7 @@
 ![websocket](https://img.shields.io/badge/-websocket-lightred.svg)
 [![org](https://img.shields.io/badge/org-@LazyKoala-yellow.svg)](https://github.com/lazy-koala/)
 ---
-> ### 基于WebScoket的及时IM聊天工具 
+> ### 基于WebScoket的即时IM聊天工具 
 - Why
 
   ```
