@@ -1,6 +1,6 @@
 
  <h1 class="curproject-name"> wchat-http </h1> 
- 图片上传&浏览服务
+ wchat http api接口文档
 
 
 # 公共分类
@@ -54,9 +54,7 @@ token , uid
 **Method：** POST
 
 **接口描述：**
-<ul>
-<li>注册成功后，系统自动进行短期登录</li>
-</ul>
+<p>- 注册成功可自动登录</p>
 
 
 ### 请求参数
@@ -71,17 +69,15 @@ token , uid
 {
     "username": "",  // * 帐号
     "password": "",  // * 密码
-    "mail": "",      // * 邮箱
-    "mailCode": "",  // * 邮箱验证码
-    "nickname": "",  //   昵称
-    "token": "",     // * 邮箱验证token
+    "nickname": "",  // * 昵称
+    "sex": ""        // 性别 -1 0 1
 }
 ```
 ### 返回数据
 
 ```javascript
 {
-    "code": "",     // 1004-邮箱已存在;1005-用户名已存在;1007-验证码已过期;1008-验证码错误;1009-注册数据异常
+    "code": "",     // 1005-用户名已存在;1009-注册数据异常
     "message": "",  // * 结果描述
 }
 ```
@@ -156,6 +152,73 @@ token , uid
         "headImg": "",           // * 完整头像路径
         "sign": "个性签名",      // 
         "sex": "1"               // * -1 未设置 0 女 1 男
+    }
+}
+```
+## 获取待处理的好友申请
+<a id=获取待处理的好友申请> </a>
+### 基本信息
+
+**Path：** /api/user/friend_apply_list
+
+**Method：** GET
+
+**接口描述：**
+
+
+### 请求参数
+
+### 返回数据
+
+```javascript
+{
+    "message": "",              // *
+    "data": {
+        "list": [{
+            "friendApplyId": "",        // *
+            "fromUserId": "",           // * 申请人userId
+            "remark": "",               // * 申请备注
+            "username": "",             // *
+            "nickname": "",             // *
+            "headImg": "",              // *
+            "sex":"",                   // *
+            "sign": "",                 // *
+            "createTime": 1534417492018 // *
+        }]
+    }
+}
+```
+## 获取待处理的群组申请
+<a id=获取待处理的群组申请> </a>
+### 基本信息
+
+**Path：** /api/user/group_apply_list
+
+**Method：** GET
+
+**接口描述：**
+
+
+### 请求参数
+
+### 返回数据
+
+```javascript
+{
+    "message": "",              // *
+    "data": {
+        "list": [{
+            "groupApplyId":"",           // *
+            "fromUserId": "",           // * 申请人userId
+            "remark": "",               // * 申请备注
+            "groupName": "",             // *
+            "groupNickname": "",             // *
+            "groupHeadImg": "",              // *
+            "username":"",
+            "nickname": "",
+            "headImg": "",
+            "createTime": 1534417492018 // *
+        }]
     }
 }
 ```
@@ -320,6 +383,44 @@ token , uid
 ```
 # 群组管理
 
+## 搜索群组
+<a id=搜索群组> </a>
+### 基本信息
+
+**Path：** /api/search
+
+**Method：** GET
+
+**接口描述：**
+
+
+### 请求参数
+**Query**
+
+| 参数名称  |  是否必须 | 示例  | 备注  |
+| ------------ | ------------ | ------------ | ------------ |
+| groupName | 否  |  群帐号 |   |
+| groupNickname | 否  |  群昵称 |   |
+
+### 返回数据
+
+```javascript
+{
+   "message": "",
+   "data": {
+      "list": [
+         {
+            "groupId": "",
+            "groupName": "",
+            "groupNickname": "",
+            "ownerUserId": "",
+            "introduction": "",
+            "groupHeadImg": ""
+         }
+      ]
+   }
+}
+```
 ## 新建群组
 <a id=新建群组> </a>
 ### 基本信息
@@ -352,5 +453,95 @@ token , uid
 {
     "code": "",                 // 1007 - 已存在的群账号
     "message": ""               // *
+}
+```
+## 获取群组
+<a id=获取群组> </a>
+### 基本信息
+
+**Path：** /api/get_group_list
+
+**Method：** GET
+
+**接口描述：**
+
+
+### 请求参数
+**Query**
+
+| 参数名称  |  是否必须 | 示例  | 备注  |
+| ------------ | ------------ | ------------ | ------------ |
+| type | 是  |  1-所有加入群   2-自己创建的群 |  群类型 |
+
+### 返回数据
+
+```javascript
+{
+  "message": "操作完成",
+  "data": {
+    "list": [
+      {
+        "ownerUserId": "",                  // 
+        "ownerUername": "111",              //
+        "ownnerNickname": "111",            //
+        "ownerHeadImg": "",                 //
+        "ownnerSex": "0",                   //
+        "ownnerSign": "lalla",              //
+        "remark": "111",                    //
+        "groupId": "1",                     // *
+        "groupName": "",                    // *
+        "groupNickname": "",                // *
+        "groupHeadImg": "",                 // *
+        "introduction": ""                  // *
+      }
+    ]
+  }
+}
+```
+## 获取群组成员
+<a id=获取群组成员> </a>
+### 基本信息
+
+**Path：** /api/get_group_user_list
+
+**Method：** GET
+
+**接口描述：**
+
+
+### 请求参数
+**Query**
+
+| 参数名称  |  是否必须 | 示例  | 备注  |
+| ------------ | ------------ | ------------ | ------------ |
+| groupId | 是  |   |   |
+
+### 返回数据
+
+```javascript
+{
+   "message": "操作完成",
+   "data": {
+      "list": [
+         {
+            "userId": "111",
+            "username": "111",
+            "nickname": "111",
+            "headImg": "",
+            "sex": "0",
+            "sign": "lalla",
+            "remark": "111"
+         },
+         {
+            "userId": "222",
+            "username": "222",
+            "nickname": "222",
+            "headImg": "",
+            "sex": "1",
+            "sign": "hahha",
+            "remark": "222"
+         }
+      ]
+   }
 }
 ```

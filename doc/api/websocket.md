@@ -13,6 +13,7 @@
     /ws/friend/add_reply | 处理好友申请
     /ws/friend/del | 删除好友
     /ws/group/add | 申请加入群组
+    /ws/group/add_reply | 处理群组申请
     
 - 请求参数格式 ( * 表示该属性必传)
 
@@ -113,6 +114,24 @@
             "desc": "处理完成"
             }
             ```
+    - /ws/group/add_reply
+    
+        - 请求
+        
+            ```json
+            {
+            "groupApplyId": "* 群组申请id",
+            "agree": true
+            }
+            ```
+        - 响应
+        
+            ```json
+            {
+            "code": "0000",
+            "desc": "处理完成"
+            }
+            ```
 
 - 响应错误码 
 
@@ -131,6 +150,8 @@
    0201 | 不存在的群组信息 |
    0202 | 已经加入该群 |
    0203 | 已经发送过入群申请 |
+   0204 | 不存在的群组申请Id |
+   0205 | 该群组申请已处理 |
    
 ---
 > #### 事件通知
@@ -150,11 +171,10 @@
     邀请加入群组 | group_invite |
     被群组移除 | group_kicked_out |
     申请加入群组 | group_add |
+    同意入群 | group_add_result | 申请入群处理通知 通过/不通过
     成员离群 | group_leave | 群成员主动离开群
-    同意入群 | group_add_agree | 同意申请入群
-    拒绝入群 | group_add_refused | 拒绝申请入群
-    同意邀请入群 | group_invite_agree | 通过入群邀请
-    拒绝入群邀请 | group_invite_refused | 
+    成员入群 | group_join | 新成员入群推送
+    邀请入群结果推送 | group_invite_result | 推送给邀请人对方是否同意入群
     强制登出 | forced_logout | 异地登录强制退出
 
 - 事件通知参数格式
@@ -198,7 +218,9 @@
             "nickname": "Acexy",
             "remark": "加好友~",
             "username": "acexy",
-            "remark": "申请描述"
+            "remark": "申请描述",
+            "sex": "性别 0-女 1-男 -1-未设置" ,
+            "sign": "个性签名"
           },
           "eventType": "friend_add",
           "fromUserId": "fromUserId",
@@ -215,9 +237,10 @@
             "agree": true,
             "headImg": "/**/*.png",
             "nickname": "Acexy",
-            "remark": "加好友~",
             "userId": "userId",
-            "username": "acexy"
+            "username": "acexy",
+            "sex": "性别 0-女 1-男 -1-未设置",
+            "sign": "个性签名"
           },
           "eventType": "friend_add_result",
           "fromUserId": "fromUserId",
@@ -254,6 +277,7 @@
           "time": 1534417492018
         }
         ```
+        
     - forced_logout
     
         ```json
@@ -270,18 +294,63 @@
         ```json
         {
           "data": {
-              "groupApplyId": "申请id",
-              "groupId": "申请加入群id",
-              "groupNickname": "群昵称",
-              "groupName": "群帐号",
-              "groupHeadImg": "群头像",
-              "userId": "申请人uerId",
-              "nickname": "用户昵称",
-              "headImg": "用户头像",
-              "username": "用户帐号",
-              "remark": "申请备注"
+            "groupApplyId": "申请id",
+            "groupId": "申请加入群id",
+            "groupNickname": "群昵称",
+            "groupName": "群帐号",
+            "groupHeadImg": "群头像",
+            "userId": "申请人uerId",
+            "nickname": "用户昵称",
+            "headImg": "用户头像",
+            "username": "用户帐号",
+            "remark": "申请备注",
+            "introduction": "群简介"
           },
           "eventType": "group_add",
+          "fromUserId": "fromUserId",
+          "toUserId": "toUserId",
+          "time": 1534417492018
+        }
+        ```
+        
+    - group_add_result
+      
+        ```json
+        {
+          "data": {
+            "agree": true,
+            "groupId": "申请加入群id",
+            "groupNickname": "群昵称",
+            "groupName": "群帐号",
+            "groupHeadImg": "群头像",
+            "ownerUserId": "群主userId",
+            "introduction": "群简介"
+          },
+          "eventType": "group_add_result",
+          "fromUserId": "fromUserId",
+          "toUserId": "toUserId",
+          "time": 1534417492018
+        }
+        ```
+    - group_join
+      
+        ```json
+        {
+          "data": {
+            "groupId": "申请加入群id",
+            "groupNickname": "群昵称",
+            "groupName": "群帐号",
+            "groupHeadImg": "群头像",
+            "ownerUserId": "群主userId",
+            "introduction": "群简介",
+            "userId": "",
+            "username": "",
+            "nickname": "",
+            "sex": "",
+            "headImg": "",
+            "sign": ""
+          },
+          "eventType": "group_join",
           "fromUserId": "fromUserId",
           "toUserId": "toUserId",
           "time": 1534417492018
