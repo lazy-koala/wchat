@@ -23,7 +23,7 @@
    HTTP   -----------> MongoDB
 
   >
-  > vue(UI)、node(http srv)、java(websocket svr)
+  > vue(UI)、node(http srv)、java(websocket srv)
   >
   ```
 - 接口文档
