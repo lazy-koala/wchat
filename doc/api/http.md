@@ -70,7 +70,8 @@ token , uid
     "username": "",  // * 帐号
     "password": "",  // * 密码
     "nickname": "",  // * 昵称
-    "sex": ""        // 性别 -1 0 1
+    "sex": "",        //  性别 -1 0 1
+    "sign": ""       // 个性签名
 }
 ```
 ### 返回数据
@@ -304,8 +305,8 @@ token , uid
    }
 }
 ```
-## 获取好友列表
-<a id=获取好友列表> </a>
+## 获取列表
+<a id=获取列表> </a>
 ### 基本信息
 
 **Path：** /api/friend/get_friend_list
@@ -348,8 +349,8 @@ token , uid
   }
 }
 ```
-## 设置好友备注
-<a id=设置好友备注> </a>
+## 设置备注
+<a id=设置备注> </a>
 ### 基本信息
 
 **Path：** /api/friend/set_remark
@@ -387,7 +388,7 @@ token , uid
 <a id=搜索群组> </a>
 ### 基本信息
 
-**Path：** /api/search
+**Path：** /api/group/search
 
 **Method：** GET
 
@@ -452,14 +453,89 @@ token , uid
 ```javascript
 {
     "code": "",                 // 1007 - 已存在的群账号
-    "message": ""               // *
+    "message": "",              // *
+    "data": {
+        "groupId": "dddd",
+        "groupHeadImg": "",
+        "groupName":"lazy-koala",           // * 群组帐号
+        "groupNickname": "技术小组",        // * 群组名称
+        "introduction": "群简介"
+    }
+    
+}
+```
+## 获取成员
+<a id=获取成员> </a>
+### 基本信息
+
+**Path：** /api/group/get_group_user_list
+
+**Method：** GET
+
+**接口描述：**
+
+
+### 请求参数
+**Query**
+
+| 参数名称  |  是否必须 | 示例  | 备注  |
+| ------------ | ------------ | ------------ | ------------ |
+| groupId | 是  |  ?groupId=1&groupId=2 |  可以是多个groupId |
+
+### 返回数据
+
+```javascript
+{
+   "message": "操作完成",
+   "data": {
+      "groupIdA": [
+         {
+            "userId": "111",
+            "username": "111",
+            "nickname": "111",
+            "headImg": "",
+            "sex": "0",
+            "sign": "lalla",
+            "remark": "111"
+         },
+         {
+            "userId": "222",
+            "username": "222",
+            "nickname": "222",
+            "headImg": "",
+            "sex": "1",
+            "sign": "hahha",
+            "remark": "222"
+         }
+      ],
+      "groupIdB": [
+         {
+            "userId": "111",
+            "username": "111",
+            "nickname": "111",
+            "headImg": "",
+            "sex": "0",
+            "sign": "lalla",
+            "remark": "111"
+         },
+         {
+            "userId": "222",
+            "username": "222",
+            "nickname": "222",
+            "headImg": "",
+            "sex": "1",
+            "sign": "hahha",
+            "remark": "222"
+         }
+      ]
+   }
 }
 ```
 ## 获取群组
 <a id=获取群组> </a>
 ### 基本信息
 
-**Path：** /api/get_group_list
+**Path：** /api/group/get_group_list
 
 **Method：** GET
 
@@ -483,10 +559,10 @@ token , uid
       {
         "ownerUserId": "",                  // 
         "ownerUername": "111",              //
-        "ownnerNickname": "111",            //
+        "ownerNickname": "111",            //
         "ownerHeadImg": "",                 //
-        "ownnerSex": "0",                   //
-        "ownnerSign": "lalla",              //
+        "ownerSex": "0",                   //
+        "ownerSign": "lalla",              //
         "remark": "111",                    //
         "groupId": "1",                     // *
         "groupName": "",                    // *
@@ -496,52 +572,5 @@ token , uid
       }
     ]
   }
-}
-```
-## 获取群组成员
-<a id=获取群组成员> </a>
-### 基本信息
-
-**Path：** /api/get_group_user_list
-
-**Method：** GET
-
-**接口描述：**
-
-
-### 请求参数
-**Query**
-
-| 参数名称  |  是否必须 | 示例  | 备注  |
-| ------------ | ------------ | ------------ | ------------ |
-| groupId | 是  |   |   |
-
-### 返回数据
-
-```javascript
-{
-   "message": "操作完成",
-   "data": {
-      "list": [
-         {
-            "userId": "111",
-            "username": "111",
-            "nickname": "111",
-            "headImg": "",
-            "sex": "0",
-            "sign": "lalla",
-            "remark": "111"
-         },
-         {
-            "userId": "222",
-            "username": "222",
-            "nickname": "222",
-            "headImg": "",
-            "sex": "1",
-            "sign": "hahha",
-            "remark": "222"
-         }
-      ]
-   }
 }
 ```
