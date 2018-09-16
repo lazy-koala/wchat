@@ -16,11 +16,11 @@
 - 技术栈
 
   ```
-  Browser <---------> WebSocket
+  Browser <---------> WebSocket-Srv
     |	                 |
     |	                 |
     V                      V
-   HTTP   -----------> MongoDB
+  HTTP-Srv   -----------> MongoDB
 
   >
   > vue(UI)、node(http srv)、java(websocket srv)
