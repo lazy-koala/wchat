@@ -1,0 +1,22 @@
+{
+  "name": "node-http-srv",
+  "version": "1.0.0",
+  "description": "wchat http server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "busboy": "^0.2.14",
+    "colour": "^0.7.1",
+    "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "md5": "^2.2.1",
+    "mongoose": "5.2.8",
+    "nodemailer": "^4.6.8",
+    "redis": "^2.8.0",
+    "uuid": "^3.2.1"
+  }
+}
