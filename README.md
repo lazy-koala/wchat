@@ -11,7 +11,7 @@
   ```
   QQ微信或者其他沟通工具不能使用？Try this 与外界获得联系。😄
   ```
-> ### 在线使用 [wchat](https://wchat.thankjava.com)
+> ### 在线使用 [https://wchat.thankjava.com](https://wchat.thankjava.com)
 
 - 技术栈
 
