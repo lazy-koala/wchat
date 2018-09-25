@@ -160,22 +160,22 @@
 ```
 - 通知事件清单
 
-    事件类型 | 事件码 | 备注 
-    --- | --- | ---
-    好友消息 | chat_f2f | 好友发送消息
-    群消息 | chat_group | 群组中有人发送消息
-    好友申请 | friend_add | 收到请求被添加好友的推送消息
-    好友删除 | friend_deleted | 被好友删除
-    好友状态变化 | friend_status_change | 好友上下线
-    好友申请结果 | friend_add_result | 申请添加好友通过/不通过通知
-    邀请加入群组 | group_invite |
-    被群组移除 | group_kicked_out |
-    申请加入群组 | group_add |
-    同意入群 | group_add_result | 申请入群处理通知 通过/不通过
-    成员离群 | group_leave | 群成员主动离开群
-    成员入群 | group_join | 新成员入群推送
-    邀请入群结果推送 | group_invite_result | 推送给邀请人对方是否同意入群
-    强制登出 | forced_logout | 异地登录强制退出
+    事件类型 | 事件码 | 推送目标 | 备注 
+    --- | --- | --- | ---
+    好友消息 | chat_f2f | 消息发送方 | 好友发送消息
+    群消息 | chat_group | 群组中所有在线成员 | 群组中有人发送消息
+    好友申请 | friend_add | 申请被添加的好友 | 收到请求被添加好友的推送消息
+    好友申请结果 | friend_add_result | 申请人 | 申请结果
+    好友删除 | friend_deleted | 被删除的好友 | 被好友删除
+    好友状态变化 | friend_status_change | 所有该用户的在线好友 | 好友上下线
+    邀请加入群组 | group_invite | |
+    被群组移除 | group_kicked_out | 被移除人 |
+    申请加入群组 | group_add | 群主 | 申请加入某群
+    申请入群结果 | group_add_result | 申请入群人 | 申请入群处理通知
+    成员离群 | group_leave | 群组中所有在线成员 | 群成员主动/被动离群
+    成员入群 | group_join | 群组中所有在线成员 | 新成员入群推送
+    邀请入群结果推送 | group_invite_result |  | 推送给邀请人对方是否同意入群
+    强制登出 | forced_logout | 同帐号的另一个登录点 | 异地登录强制退出
 
 - 事件通知参数格式
 
