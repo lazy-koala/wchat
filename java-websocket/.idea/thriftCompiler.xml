@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ThriftCompiler">
+    <compilers>
+      <compiler url="thriftc" nowarn="no" strict="no" verbose="no" recurse="no" debug="no" allownegkeys="no" allow64bitconsts="no" />
+    </compilers>
+  </component>
+</project>
