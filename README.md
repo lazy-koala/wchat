@@ -22,9 +22,7 @@
     V                      V
   HTTP-Srv   -----------> MongoDB
 
-  >
-  > vue(UI)、node(http srv)、java(websocket srv)
-  >
+  > vue(UI)、node(http srv)、java(websocket srv  jdk>=1.8.0)
   ```
 - 接口文档
   - [http接口文档](https://github.com/lazy-koala/wchat/blob/master/doc/api/http.md)
@@ -35,6 +33,7 @@
    - 1.0.0 初始版本
       开发中，预计10月初上线
   ```
+  
 > #### 关于我们
 
 [![org](https://img.shields.io/badge/org-@LazyKoala-yellow.svg)](https://github.com/lazy-koala/)
