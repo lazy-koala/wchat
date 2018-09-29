@@ -12,7 +12,7 @@ import java.util.List;
  **/
 public interface BaseMapper<T> {
 
-    MongoDBManager mongo = MongoDriverManager.getSingleton();
+    MongoDBManager mongo = MongoDriverManager.getSingleton("./config/mongodb.properties");
 
     T selectById(String id);
 
