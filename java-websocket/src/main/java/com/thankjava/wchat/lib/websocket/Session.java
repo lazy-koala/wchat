@@ -1,7 +1,7 @@
 package com.thankjava.wchat.lib.websocket;
 
-import com.thankjava.toolkit.thread.ThreadTask;
-import com.thankjava.toolkit.vo.thread.TaskEntity;
+import com.thankjava.toolkit.bean.thread.TaskEntity;
+import com.thankjava.toolkit.core.thread.ThreadTask;
 import org.java_websocket.WebSocket;
 
 import java.util.HashMap;

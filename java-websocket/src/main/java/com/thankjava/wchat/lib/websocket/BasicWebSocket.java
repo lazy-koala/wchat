@@ -1,6 +1,6 @@
 package com.thankjava.wchat.lib.websocket;
 
-import com.thankjava.toolkit.reflect.ReflectHelper;
+import com.thankjava.toolkit.core.reflect.ReflectUtil;
 import com.thankjava.wchat.lib.websocket.callback.OnConnCloseListener;
 import com.thankjava.wchat.lib.websocket.callback.OnMessageListener;
 import com.thankjava.wchat.lib.websocket.entity.ConVerifyResult;
@@ -92,7 +92,7 @@ public class BasicWebSocket extends WebSocketServer {
             Class clazz = Class.forName("com.thankjava.wchat.lib.websocket.core.WSImpl");
             Constructor constructor = clazz.getDeclaredConstructors()[0];
             constructor.setAccessible(true);
-            ReflectHelper.setFiledVal(WSUtil.class, "ws", constructor.newInstance());
+            ReflectUtil.setFiledVal(WSUtil.class, "ws", constructor.newInstance());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }

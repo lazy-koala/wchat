@@ -1,11 +1,9 @@
 package com.thankjava.wchat.util;
 
-import com.thankjava.toolkit.thread.ThreadPool;
-import com.thankjava.toolkit3d.fastjson.FastJson;
+import com.thankjava.toolkit.core.thread.ThreadPool;
 import com.thankjava.wchat.bean.MsgPushContext;
 import com.thankjava.wchat.consts.ResponseCode;
 import com.thankjava.wchat.lib.websocket.WS;
-import org.java_websocket.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

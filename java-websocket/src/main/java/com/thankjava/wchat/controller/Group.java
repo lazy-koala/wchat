@@ -1,6 +1,6 @@
 package com.thankjava.wchat.controller;
 
-import com.thankjava.toolkit.reflect.BeanCopier;
+import com.thankjava.toolkit.core.reflect.BeanCopierUtil;
 import com.thankjava.wchat.bean.MsgPushContext;
 import com.thankjava.wchat.bean.RequestContext;
 import com.thankjava.wchat.bean.ResponseContext;
@@ -72,8 +72,8 @@ public class Group {
         groupApply.setRemark(groupAdd.getRemark());
 
         String groupApplyId = groupApplyMapper.insert(groupApply);
-        GroupAddPush groupAddPush = BeanCopier.copy(groupInfo, GroupAddPush.class);
-        BeanCopier.append(ctx.getAuthUser(), groupAddPush);
+        GroupAddPush groupAddPush = BeanCopierUtil.copy(groupInfo, GroupAddPush.class);
+        BeanCopierUtil.append(ctx.getAuthUser(), groupAddPush);
         groupAddPush.setGroupHeadImg(groupInfo.getHeadImg());
         groupAddPush.setRemark(groupAdd.getRemark());
         groupAddPush.setGroupApplyId(groupApplyId);
@@ -146,9 +146,9 @@ public class Group {
         if (groupAddReply.getAgree()) {
 
             // 向成员推送新用户入群通知
-            GroupJoinPush groupJoinPush = BeanCopier.copy(groupAddReplyPush, GroupJoinPush.class);
+            GroupJoinPush groupJoinPush = BeanCopierUtil.copy(groupAddReplyPush, GroupJoinPush.class);
 
-            BeanCopier.append(userMapper.selectById(groupApply.getApplyUserId()), groupJoinPush);
+            BeanCopierUtil.append(userMapper.selectById(groupApply.getApplyUserId()), groupJoinPush);
             groupJoinPush.setUserId(groupApply.getApplyUserId());
 
             GroupRelation groupRelation = new GroupRelation();

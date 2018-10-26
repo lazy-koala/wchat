@@ -1,6 +1,6 @@
 package com.thankjava.wchat.controller;
 
-import com.thankjava.toolkit.reflect.BeanCopier;
+import com.thankjava.toolkit.core.reflect.BeanCopierUtil;
 import com.thankjava.wchat.bean.controller.friend.FriendDel;
 import com.thankjava.wchat.consts.EventType;
 import com.thankjava.wchat.bean.MsgPushContext;
@@ -21,7 +21,6 @@ import com.thankjava.wchat.db.mongo.impl.FriendApplyMapperImpl;
 import com.thankjava.wchat.db.mongo.impl.FriendRelationMapperImpl;
 import com.thankjava.wchat.db.mongo.impl.UserMapperImpl;
 import com.thankjava.wchat.notice.FriendEventPush;
-import com.thankjava.wchat.util.WSUtil;
 import com.thankjava.wchat.ws.anno.WSController;
 import com.thankjava.wchat.ws.anno.WSProcess;
 
@@ -82,7 +81,7 @@ public class Friend {
 
 
         friendApply.setRemark(friendAdd.getRemark());
-        FriendAddPush friendAddPush = BeanCopier.copy(ctx.getAuthUser(), FriendAddPush.class);
+        FriendAddPush friendAddPush = BeanCopierUtil.copy(ctx.getAuthUser(), FriendAddPush.class);
         friendAddPush.setRemark(friendAdd.getRemark());
         friendApply.setApplyUserRead(true);
         String friendApplyId = friendApplyMapper.insert(friendApply);
@@ -134,7 +133,7 @@ public class Friend {
 
         friendApply = friendApplies.get(0);
 
-        FriendAddReplyPush friendAddReplyPush = BeanCopier.copy(ctx.getAuthUser(), FriendAddReplyPush.class);
+        FriendAddReplyPush friendAddReplyPush = BeanCopierUtil.copy(ctx.getAuthUser(), FriendAddReplyPush.class);
         friendAddReplyPush.setUserId(ctx.getFromUserId());
 
         if (friendAddReply.getAgree()) { // 同意添加好友

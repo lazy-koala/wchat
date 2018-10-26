@@ -1,6 +1,6 @@
 package com.thankjava.wchat.bean;
 
-import com.thankjava.toolkit3d.fastjson.FastJson;
+import com.thankjava.toolkit3d.core.fastjson.FastJson;
 import com.thankjava.wchat.consts.EventType;
 
 /**

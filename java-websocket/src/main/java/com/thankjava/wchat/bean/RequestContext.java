@@ -1,7 +1,6 @@
 package com.thankjava.wchat.bean;
 
 import com.alibaba.fastjson.JSONObject;
-import com.thankjava.toolkit3d.fastjson.FastJson;
 import com.thankjava.wchat.db.entity.User;
 import org.java_websocket.WebSocket;
 

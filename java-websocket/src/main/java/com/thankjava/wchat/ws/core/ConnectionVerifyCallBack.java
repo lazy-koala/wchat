@@ -1,8 +1,7 @@
 package com.thankjava.wchat.ws.core;
 
-import com.thankjava.toolkit.reflect.BeanCopier;
-import com.thankjava.toolkit.thread.ThreadTask;
-import com.thankjava.toolkit3d.fastjson.FastJson;
+import com.thankjava.toolkit.core.reflect.BeanCopierUtil;
+import com.thankjava.toolkit3d.core.fastjson.FastJson;
 import com.thankjava.wchat.bean.MsgPushContext;
 import com.thankjava.wchat.bean.notice.notice.OnlinePush;
 import com.thankjava.wchat.consts.CookieName;
@@ -116,7 +115,7 @@ public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
             } else {
 
                 // 向好友推送上线通知
-                OnlinePush onlinePush = BeanCopier.copy(user, OnlinePush.class);
+                OnlinePush onlinePush = BeanCopierUtil.copy(user, OnlinePush.class);
                 statusChangeEventPush.pushOnline(new MsgPushContext<>(
                         EventType.friend_status_change,
                         uid,

@@ -1,7 +1,7 @@
 package com.thankjava.wchat.ws.core;
 
 import com.alibaba.fastjson.JSONObject;
-import com.thankjava.toolkit3d.fastjson.FastJson;
+import com.thankjava.toolkit3d.core.fastjson.FastJson;
 import com.thankjava.wchat.bean.ResponseContext;
 import com.thankjava.wchat.consts.ResponseCode;
 import com.thankjava.wchat.lib.websocket.callback.OnMessageListener;

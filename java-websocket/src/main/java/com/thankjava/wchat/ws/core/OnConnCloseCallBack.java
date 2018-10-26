@@ -1,7 +1,7 @@
 package com.thankjava.wchat.ws.core;
 
-import com.thankjava.toolkit.reflect.BeanCopier;
-import com.thankjava.toolkit.thread.ThreadTask;
+import com.thankjava.toolkit.core.reflect.BeanCopierUtil;
+import com.thankjava.toolkit.core.thread.ThreadTask;
 import com.thankjava.wchat.bean.MsgPushContext;
 import com.thankjava.wchat.bean.notice.notice.OfflinePush;
 import com.thankjava.wchat.consts.EventType;
@@ -45,7 +45,7 @@ public class OnConnCloseCallBack implements OnConnCloseListener {
                                 EventType.friend_status_change,
                                 conVerifyResult.getUserId(),
                                 null,
-                                BeanCopier.copy(conVerifyResult.getBindData(), OfflinePush.class)
+                                BeanCopierUtil.copy(conVerifyResult.getBindData(), OfflinePush.class)
                         );
 
                         statusChangeEventPush.pushOffline(msgPushContext);
