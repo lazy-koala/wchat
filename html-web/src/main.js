@@ -11,7 +11,8 @@ Vue.config.productionTip = false
 import "./assets/styles/reset.css"
 import "./assets/styles/animate.css"
 import "./assets/styles/iconfont.css"
-import store from './store/store.js'
+// import store from './store/store.js'
+import store from './store/index.js'
 import $ from 'jquery'
 
 // Vue.use(Button)

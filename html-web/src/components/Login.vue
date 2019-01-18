@@ -86,9 +86,6 @@ import $axios from 'axios';
 import Cookies from "js-cookie";
 export default {
     name: "Login",
-    // mounted () {
-    //     Common.canvas("starts",230,1000,60,2,50000,0.5);
-    // }
     data () {
       return {
         showRegBox: false,

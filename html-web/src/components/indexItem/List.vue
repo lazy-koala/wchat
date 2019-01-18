@@ -22,11 +22,11 @@
     </div>
 </template>
 <script type="text/javascript">
-import $axios from 'axios';
-import Qs from 'qs';
 import InfoCard from '../common/InfoCard';
 import GroupInfoCard from '../common/GroupInfoCard';
 import Cookies from "js-cookie";
+import Common from "../../assets/scripts/common.js";
+import { mapActions, mapGetters } from "vuex";
 export default {
     name: 'List',
     components: {
@@ -51,7 +51,13 @@ export default {
         },
         groupSessions: function () {
             return this.$store.state.groupSessions;
-        }
+        },
+
+        ...mapGetters([
+            'friendList'
+        ])
+
+
     },
     filters: {
         nameText: function (user) {
@@ -144,32 +150,33 @@ export default {
                     that.$store.commit('UPDATE_GROUP_FRIENDLIST', res.data);
                 }
             });
-        }
+        },
+        ...mapActions([
+            'friendList'
+        ])
     },
     created() {
         let that = this;
         let token = Cookies.get('token');
-        // if (token) {
-        //     let sessions = localStorage.getItem('chat-sessions');
-        //     let data = {
-        //         id: localStorage.getItem('currentSessionId'),
-        //         name: localStorage.getItem('currentUser')
-        //     };
-        //     that.$store.commit('UPDATE_SESSIONS_FROM_LS', JSON.parse(sessions));
-        //     that.$store.commit('SELECT_SESSION', data);
-        // } else {
 
-        // }
+        Common.axios({
+            url: 'getFriendList'
+        }).then((res) => {
+            let userList = res.data.list || [];
+            this.friendList(userList);
+        }, (error) => {
 
-        $axios.get('/api/friend/get_friend_list', {}).then((res) => {
-                if (res && res.data && res.data.data) {
-                    let userList = res.data.data.list || [];
-                    if (userList.length > 0) {
-                        that.selectSession(userList[0].userId, userList[0], false);
-                    }
-                    that.$store.commit('INIT_SESSIONS', userList);
-                }
-        });
+        })
+
+        // $axios.get('/api/friend/get_friend_list', {}).then((res) => {
+        //         if (res && res.data && res.data.data) {
+        //             let userList = res.data.data.list || [];
+        //             if (userList.length > 0) {
+        //                 that.selectSession(userList[0].userId, userList[0], false);
+        //             }
+        //             that.$store.commit('INIT_SESSIONS', userList);
+        //         }
+        // });
 
         // 获取群组列表
         $axios.get('/api/group/get_group_list', {params: {type: '1'}}).then((res) => {

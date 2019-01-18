@@ -5,16 +5,43 @@ const state = {
     user: {},
 
     // 当前会好好友
-    currentUser: '',
+    currentFriend: '',
 
-    // 当前选中的会话Id
-    currentSessionId: '',
+    // 当前选中的会话的用户Id
+    currentFriendId: '',
 
     // 好友会话列表
-    sessions: [],
+    /** 字段注释
+        'userId': [
+            {
+                content: '',
+                date: '',
+                self: true,
+                code: ''
+            },
+            {
+                content: '',
+                date: '',
+                self: true,
+                code: ''
+            }
+
+        ]
+    **/
+    sessions: {},
 
     // 好友列表
-    friendList: {},
+    /*
+        "username": "111",          // * 账号
+        "nickname": "111",          // * 昵称
+        "email": "111@thankjava.com",             // * 电子邮箱（脱敏）
+        "headImg": "./static/test.jpg",
+        "sex": "0",                      // * 性别 0-女 1-男 -1-未设置
+        "sign": "",                     // * 个性签名
+        "remark": "",
+        'id': ''
+    */
+    friendList: [],
 
     // 群会话列表
     groupSessions: [],
@@ -24,7 +51,7 @@ const state = {
     currentGroupName: '',
 
     // 群成员列表
-    groupUserList: {}
+    groupUserList: {},
 
     // 过滤出只包含这个key的会话
     filterKey: '',

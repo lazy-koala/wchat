@@ -31,6 +31,10 @@ const store = new vuex.Store({
       //         'id': ''
       //     },
       //     messages: [
+              // content: '',
+              // date: '',
+              // self: true,
+              // code: ''
 
       //     ]
       // },
@@ -510,7 +514,7 @@ function changeList(sessions, id, isGroup) {
     }
   }
   if (index != -1) {
-    
+
   }
 };
 
