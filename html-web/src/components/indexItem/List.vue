@@ -3,15 +3,15 @@
     <el-tabs :stretch = "true" class="el-tabs"  @tab-click="changeType">
         <el-tab-pane label="好友">
             <ul>
-                <li class="list-li" v-for="item in sessions" :class="{ active: item.userId === currentId }" @click="selectSession(item.userId, item.user, false)">
+                <li class="list-li" v-for="item in friendList" :class="{ active: item.userId === currentFriendId }">
                     <info-card :userId="item.userId" :isSelf="isSelf"></info-card>
-                    <p class="name">{{item.user | nameText}}<span class="status el-icon-circle-check" :class="statusChange(item.user)"></span></p>
+                    <p class="name">{{item | nameText}}<span class="status el-icon-circle-check" :class="statusChange(item)"></span></p>
                 </li>
             </ul>
         </el-tab-pane>
         <el-tab-pane label="群组">
             <ul class="list-wrapper">
-                <li class="list-li" v-for="item in groupSessions" :class="{ active: item.groupId === currentGroupId }" @click="selectSession(item.groupId, item.groupInfo, true)">
+                <li class="list-li" v-for="item in groupList" :class="{ active: item.groupId === currentGroupId }" @click="selectSession(item.groupId, item.groupInfo, true)">
                     <group-info-card :userId="item.groupId" :groupInfo="item.groupInfo" :isSelf="isSelf"></group-info-card>
                     <p class="name">{{item.groupInfo.groupNickname || item.groupInfo.groupName}}</p>
                 </li>
@@ -27,6 +27,8 @@ import GroupInfoCard from '../common/GroupInfoCard';
 import Cookies from "js-cookie";
 import Common from "../../assets/scripts/common.js";
 import { mapActions, mapGetters } from "vuex";
+import $axios from 'axios';
+
 export default {
     name: 'List',
     components: {
@@ -35,29 +37,17 @@ export default {
     },
     data() {
         return {
+            hoverId: '',
             isSelf: false,
             isGroup: false
         }
     },
     computed: {
-        currentId: function () {
-            return this.$store.state.currentSessionId;
-        },
-        currentGroupId: function () {
-            return this.$store.state.currentGroupId;
-        },
-        sessions: function () {
-            return this.$store.state.sessions;
-        },
-        groupSessions: function () {
-            return this.$store.state.groupSessions;
-        },
-
         ...mapGetters([
-            'friendList'
+            'friendList',
+            'currentFriendId',
+            'groupList'
         ])
-
-
     },
     filters: {
         nameText: function (user) {
@@ -66,7 +56,7 @@ export default {
                 '0': '(离线)',
                 '1': '(在线)'
             };
-            user.remark ? (name = user.remark) : (user.nickname ? (name = user.nickname) : (name = user.username));
+            user.nickname ? (name = user.nickname) : (name = user.username);
             return name;
         }
     },
@@ -123,7 +113,7 @@ export default {
             if (type.index == '1') {
                 this.isGroup = true;
             }
-            this.$store.commit('CHANGE_TAB', type.index);
+            this.updateType(type.index);
         },
 
         getGroupUserList: function (groupList) {
@@ -152,7 +142,11 @@ export default {
             });
         },
         ...mapActions([
-            'friendList'
+            'updateFriendList',
+            'updateCurrentId',
+            'updateType',
+            'updateGroupList',
+            'updateCurrentGroupId'
         ])
     },
     created() {
@@ -163,31 +157,27 @@ export default {
             url: 'getFriendList'
         }).then((res) => {
             let userList = res.data.list || [];
-            this.friendList(userList);
+            let id = userList[0].userId || '';
+            that.hoverId = id;
+            this.updateCurrentId(id);
+            this.updateFriendList(userList);
         }, (error) => {
 
-        })
-
-        // $axios.get('/api/friend/get_friend_list', {}).then((res) => {
-        //         if (res && res.data && res.data.data) {
-        //             let userList = res.data.data.list || [];
-        //             if (userList.length > 0) {
-        //                 that.selectSession(userList[0].userId, userList[0], false);
-        //             }
-        //             that.$store.commit('INIT_SESSIONS', userList);
-        //         }
-        // });
+        });
 
         // 获取群组列表
-        $axios.get('/api/group/get_group_list', {params: {type: '1'}}).then((res) => {
+        Common.axios({
+            url: 'getGroupList',
+            params: {type: '1'}
+        }).then((res) => {
                 if (res && res.data && res.data.data) {
                     let groupList = res.data.data.list || [];
+                    let groupId = groupList[i].groupId;
                     if (groupList.length > 0) {
-                        that.selectSession(groupList[0].groupId, groupList[0], true);
-
-                        //获取群组的群成员列表
-                        that.getGroupUserList(groupList);
-                        that.$store.commit('INIT_GROUP_SESSIONS', groupList);
+                        // 更新群列表
+                        that.updateGroupList(groupList);
+                        // 默认当前选中群组为第一个
+                        that.updateCurrentGroupId(groupId)
                     }
 
                 }

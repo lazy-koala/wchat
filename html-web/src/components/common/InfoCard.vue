@@ -32,6 +32,54 @@
     </div>
 </div>
 </template>
+
+<script type="text/javascript">
+import { mapActions, mapGetters } from "vuex";
+
+    export default {
+        name: 'infoCard',
+        props: {
+            userId: {
+                type: String
+            },
+            isSelf: {
+                type: Boolean,
+            }
+        },
+        filters: {
+            name: function (user) {
+                let name = '';
+                user.nickname ? name = user.nickname : name = user.username;
+                return name;
+            }
+        },
+        computed: {
+            user: function () {
+                return this.$store.getters.friendInfo(this.userId);
+            },
+            sexClass: function () {
+                let sex = this.user.sex;
+                if (sex == 0) {
+                    return 'sex-woman el-icon-woman'
+                }
+                if (sex == 1) {
+                    return 'sex-man el-icon-nan'
+                }
+            },
+            avatarClass: function () {
+                let className = '';
+                if (!this.isSelf) {
+                    className = 'list-avatar ';
+                }
+
+                if (this.user.status == '0') {
+                    className = className + 'headImg-offline';
+                }
+                return className;
+            }
+        }
+    }
+</script>
 <style type="text/css" scoped lang="scss">
     .info-wrapper {
         display: flex;
@@ -114,61 +162,3 @@
         font-size: 0;
     }
 </style>
-<script type="text/javascript">
-    export default {
-        name: 'infoCard',
-        props: {
-            userId: {
-                type: String
-            },
-            isSelf: {
-                type: Boolean,
-            }
-        },
-        filters: {
-            name: function (user) {
-                let name = '';
-                user.nickname ? name = user.nickname : name = user.username;
-                return name;
-            }
-        },
-        computed: {
-            user: function () {
-                if (this.isSelf) {
-                    return this.$store.state.user;
-                } else {
-                    let sessions = this.$store.state.sessions;
-                    let user = {};
-                    sessions.filter((item, index) => {
-                        if(sessions[index].userId == this.userId) {
-                            user = sessions[index].user;
-                        }
-                    });
-                    return user;
-                }
-            },
-            sexClass: function () {
-                let sex = this.user.sex;
-                if (sex == 0) {
-                    return 'sex-woman el-icon-woman'
-                }
-                if (sex == 1) {
-                    return 'sex-man el-icon-nan'
-                }
-            },
-            avatarClass: function () {
-                let className = '';
-                if (!this.isSelf) {
-                    className = 'list-avatar ';
-                }
-
-                if (this.user.status == '0') {
-                    className = className + 'headImg-offline';
-                }
-                return className;
-            }
-
-
-        },
-    }
-</script>

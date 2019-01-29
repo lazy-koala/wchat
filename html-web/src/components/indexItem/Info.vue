@@ -5,9 +5,9 @@
                 <info-card :userId="userId" :isSelf="isSelf"></info-card>
                 <p class="name">{{user.nickname}}</p>
             </div>
-            <news></news>
+            <!-- <news></news>
             <search-friend></search-friend>
-            <create-group></create-group>
+            <create-group></create-group> -->
         </header>
         <p class="sign">{{user.sign}}</p>
         <footer>
@@ -21,11 +21,12 @@ import InfoCard from '../common/InfoCard';
 import News from '../common/News';
 import SearchFriend from '../SearchFriend';
 import CreateGroup from '../CreateGroup';
+import { mapActions, mapGetters } from "vuex";
+
 export default {
     name: 'User',
     data() {
         return {
-            user: this.$store.state.user,
             userId: '',
             isSelf: true
         }
@@ -38,7 +39,16 @@ export default {
     },
     methods: {
         onKeyup (e) {
-        }
+        },
+
+        ...mapActions([
+            'getUserInfo'
+        ])
+    },
+    computed: {
+        ...mapGetters([
+            'user'
+        ])
     },
     created() {
         let that = this;
@@ -47,11 +57,9 @@ export default {
         $axios.get('/api/user/get_info', {}).then((res) => {
             if (res && res.data && res.data.data) {
                 let userInfo = res.data.data || {};
-                localStorage.setItem('user', userInfo);
                 userInfo.isRead = true;
-                that.$store.commit('CHANGE_USERINFO', userInfo);
-                // that.$store.commit('SELECT_SESSION', userInfo.id);
                 that.userId = userInfo.id;
+                that.getUserInfo(userInfo);
             } else {
                 that.$message({
                     message: res.data.message,

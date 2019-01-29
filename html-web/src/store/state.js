@@ -1,14 +1,17 @@
 // import {loadSearch, loadPlay, loadFavorite} from "common/js/cache"
 
 const state = {
-    // 当前用户信息
+    // 当前登陆用户信息
     user: {},
 
     // 当前会好好友
-    currentFriend: '',
+    currentFriend: {
 
-    // 当前选中的会话的用户Id
-    currentFriendId: '',
+        // currentFriend: '',
+
+        // 当前选中的会话的用户Id
+        // currentFriendId: '',
+    },
 
     // 好友会话列表
     /** 字段注释
@@ -43,8 +46,11 @@ const state = {
     */
     friendList: [],
 
+    // 群列表
+    groupList: [],
+
     // 群会话列表
-    groupSessions: [],
+    groupSessions: {},
 
     // 当前选中的会话群组
     currentGroupId: '',

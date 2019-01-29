@@ -1,6 +1,7 @@
 <template>
     <div class="wrapper">
         <div class="sidebar">
+            <info></info>
             <list></list>
         </div>
     </div>
@@ -8,11 +9,13 @@
 
 <script>
 import List from './indexItem/List';
+import Info from './indexItem/Info';
 
 export default {
   name: 'Index',
   components: {
-    List
+    List,
+    Info
   },
   methods: {
   },
