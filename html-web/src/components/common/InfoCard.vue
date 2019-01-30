@@ -107,13 +107,14 @@ import { mapActions, mapGetters } from "vuex";
         font-weight: 700;
     }
     .avatar {
-        width: 0.4rem;
-        height: 0.4rem;
-        border-radius: 0.02rem;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 0.25rem;
     }
     .list-avatar {
-        width: 0.3rem;
-        height: 0.3rem;
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 0.2rem;
     }
     .info {
         margin-top: 0.1rem;

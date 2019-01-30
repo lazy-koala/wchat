@@ -6,11 +6,11 @@ const state = {
 
     // 当前会好好友
     currentFriend: {
+        // 当前选中的会话用户id
+        // friendId: '',
 
-        // currentFriend: '',
-
-        // 当前选中的会话的用户Id
-        // currentFriendId: '',
+        // 当前选中的会话用户名称
+        // friendName: '',
     },
 
     // 好友会话列表
@@ -18,20 +18,35 @@ const state = {
         'userId': [
             {
                 content: '',
-                date: '',
+                date: 1548830741228,
                 self: true,
                 code: ''
             },
             {
                 content: '',
-                date: '',
+                date: 1548830741228,
                 self: true,
                 code: ''
             }
 
         ]
     **/
-    sessions: {},
+    sessions: {
+        '111': [
+            {
+                content: 'testtesttesttesttesttesttesttest',
+                date: 1548830741228,
+                self: true,
+                code: ''
+            },
+            {
+                content: 'testtesttesttesttesttesttesttest',
+                date: 1548830745228,
+                self: false,
+                code: ''
+            }
+        ]
+    },
 
     // 好友列表
     /*
@@ -50,14 +65,51 @@ const state = {
     groupList: [],
 
     // 群会话列表
-    groupSessions: {},
+    groupSessions: {
+        'groupIdA': [
+            {
+                content: 'testtesttesttesttesttesttesttest',
+                date: 1548830741228,
+                self: false,
+                userId: '111',
+                code: ''
+            },
+            {
+                content: 'testtesttesttesttesttesttesttest',
+                date: 1548830745228,
+                self: true,
+                userId: '222',
+                code: ''
+            }
+        ]
+    },
 
     // 当前选中的会话群组
-    currentGroupId: '',
-    currentGroupName: '',
+    currentGroup: {
+        // groupId: '',
+        // groupName: '',
+    },
+
 
     // 群成员列表
-    groupUserList: {},
+    /*{
+        'groupId': {
+            userId1: {
+                "userId": "111",
+                "username": "111",
+                "nickname": "111",
+                "headImg": "",
+                "sex": "0",
+                "sign": "lalla",
+                "remark": "111"
+            },
+            userId1: {
+
+            }...
+        }
+
+    }*/
+    groupFriendList: {},
 
     // 过滤出只包含这个key的会话
     filterKey: '',

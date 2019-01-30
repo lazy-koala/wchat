@@ -4,18 +4,26 @@
             <info></info>
             <list></list>
         </div>
+        <div class="main">
+            <message></message>
+            <text-area></text-area>
+        </div>
     </div>
 </template>
 
 <script>
 import List from './indexItem/List';
 import Info from './indexItem/Info';
+import TextArea from './indexItem/TextArea';
+import Message from './indexItem/Message';
 
 export default {
   name: 'Index',
   components: {
     List,
-    Info
+    Info,
+    TextArea,
+    Message
   },
   methods: {
   },

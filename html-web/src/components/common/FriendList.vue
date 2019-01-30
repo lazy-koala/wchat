@@ -88,7 +88,7 @@
         },
         computed: {
             friendList: function () {
-                return this.$store.state.groupUserList[this.groupId];
+                return this.$store.getters.currentFriendList(this.groupId) || [];
             }
         }
     }

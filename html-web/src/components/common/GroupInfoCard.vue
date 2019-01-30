@@ -17,7 +17,7 @@
                         <span>{{groupInfo.groupName}}</span>
                     </div>
                 </div>
-                <img class="avatar" :src="groupInfo.headImg">
+                <img class="avatar" :src="groupInfo.groupHeadImg">
             </div>
             <div class="info">
                 <div v-if="groupInfo.remark"><span>备注: </span><h4>{{groupInfo.remark}}</h4></div>
@@ -61,7 +61,7 @@
     .avatar {
         width: 0.4rem;
         height: 0.4rem;
-        border-radius: 0.02rem;
+        border-radius: 0.2rem;
     }
     .list-avatar {
         width: 0.3rem;
@@ -123,26 +123,10 @@
             },
             isSelf: {
                 type: Boolean,
+            },
+            groupInfo: {
+                type: Object
             }
-        },
-        filters: {
-            name: function (user) {
-                let name = '';
-                user.nickname ? name = user.nickname : name = user.username;
-                return name;
-            }
-        },
-        computed: {
-            groupInfo: function () {
-                let groupSessions = this.$store.state.groupSessions;
-                let groupInfo = {};
-                groupSessions.filter((item, index) => {
-                    if(groupSessions[index].groupId == this.userId) {
-                        groupInfo = groupSessions[index].groupInfo;
-                    }
-                });
-                return groupInfo;
-            }
-        },
+        }
     }
 </script>

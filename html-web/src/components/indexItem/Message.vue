@@ -1,14 +1,14 @@
 <template>
     <div>
         <div v-if="tabType==0">
-            <p class="user-info">{{ currentUser }}</p>
+            <p class="user-info">{{ currentFriend.friendName }}</p>
             <ul class="message" ref = 'message-box'>
-                <li v-for="(item, index) in session.messages">
-                    <p class="time" v-if="messageText(session.messages[index], session.messages[index-1])">
-                        <span>{{ messageText(session.messages[index], session.messages[index-1]) }}</span>
+                <li v-for="(item, index) in currentSession">
+                    <p class="time" v-if="messageText(currentSession[index], currentSession[index-1])">
+                        <span>{{ messageText(currentSession[index], currentSession[index-1]) }}</span>
                     </p>
                     <div class="main" v-if="!item.self">
-                        <img class="avatar" :src="session.user.headImg" />
+                        <img class="avatar" :src="currentFriendInfo.headImg" />
                         <div class="msg-text">{{ item.content }}</div>
                     </div>
                     <div class="main self" v-if="item.self">
@@ -24,21 +24,21 @@
         <!-- 群组对话框 -->
         <div v-if="tabType==1">
             <div class="user-info">
-                <p>{{ currentGroupName }} 111</p>
-                <friend-list :groupId="groupSession.groupId"></friend-list>
+                <p>{{ currentGroup.groupName }}</p>
+                <friend-list :groupId="currentGroup.groupId"></friend-list>
             </div>
             <ul class="message" ref = 'message-box'>
-                <li v-for="(item, index) in groupSession.messages">
-                    <p class="time" v-if="messageText(groupSession.messages[index], groupSession.messages[index-1]) && !item.isGroupJoinResult">
-                        <span>{{ messageText(groupSession.messages[index], groupSession.messages[index-1]) }}</span>
+                <li v-for="(item, index) in groupSession">
+                    <p class="time" v-if="messageText(groupSession[index], groupSession[index-1]) && !item.isGroupJoinResult">
+                        <span>{{ messageText(groupSession[index], groupSession[index-1]) }}</span>
                     </p>
                     <p class="time" v-if="item.isGroupJoinResult">
                         <span>{{ item.content }}</span>
                     </p>
                     <div class="main" v-if="!item.self && !item.isGroupJoinResult">
                         <div class="head-wrapper">
-                            <p>{{currentFriendList[item.userId].nickname || currentFriendList[item.userId].username}}</p>
-                            <img :src="currentFriendList[item.userId].headImg" />
+                            <p>{{groupFriendInfo.nickname || groupFriendInfo.username}}</p>
+                            <img :src="groupFriendInfo.headImg" />
                         </div>
                         <div class="msg-text group">{{ item.content }}</div>
                     </div>
@@ -50,15 +50,6 @@
                         <img class="avatar" :src="user.headImg" />
                     </div>
                 </li>
-                <!-- <li>
-                    <div class="main">
-                        <div class="head-wrapper">
-                            <p>lhah</p>
-                            <img src="https://source.thankjava.com/2018/7/30/992e794d7772c5cc8ecd6ca0880ab548.jpg" />
-                        </div>
-                        <div class="msg-text group">测试测试测试测试测试测试测试测试测试</div>
-                    </div>
-                </li> -->
             </ul>
         </div>
     </div>
@@ -67,146 +58,91 @@
 import Common from "../../assets/scripts/common.js";
 import FriendList from "../common/FriendList";
 import $axios from 'axios';
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-    name: 'News',
-        data() {
-            return {
-                user: this.$store.state.user,
-                userId: '',
-                groupId: '',//当前选中的群组Id,
-                friendList: {}
-            }
-        },
-        components: {
-            'friend-list': FriendList
-        },
-        computed: {
-            session: function () {
-                let state = this.$store.state;
-                let sessions = state.sessions;
-                let currentSessionId = state.currentSessionId;
-                let temp = {};
-                for (var i = 0; i < sessions.length; i++) {
-                    let item = sessions[i];
-                    if (item.userId == currentSessionId) {
-                        temp = item;
-                        this.userId = item.userId;
-                    }
-                }
-                return temp;
+    name: 'Messages',
+    components: {
+        'friend-list': FriendList
+    },
+    computed: {
+        ...mapGetters({
+            currentSession: 'currentSession',
+            user: 'user',
+            currentFriend:'currentFriend',
+            groupSession: 'currentGroupSession',
+            currentGroup: 'currentGroup',
+            tabType: 'tabType'
+        }),
 
-            },
-            currentUser: function () {
-                return this.$store.state.currentUser
-            },
-            tabType: function () {
-                return this.$store.state.tabType;
-            },
-            currentGroupName: function () {
-                return this.$store.state.currentGroupName
-            },
-            groupSession: function () {
-                let state = this.$store.state;
-                let sessions = state.groupSessions;
-                let currentGroupId = state.currentGroupId;
-                let temp = {};
-                let that = this;
-                for (var i = 0; i < sessions.length; i++) {
-                    let item = sessions[i];
-                    if (item.groupId == currentGroupId) {
-                        temp = item;
-                        break;
-                    }
-                }
-                return temp;
-            },
-            currentFriendList: function () {
-              let state = this.$store.state;
-              let userList = state.groupUserList[state.currentGroupId];
-              let friendList = {};
-              for (var i = 0; i < userList.length; i++) {
-                var info = userList[i];
-                friendList[info.userId] = {
-                  "userId": info.userId,
-                  "username": info.username,
-                  "nickname": info.nickname,
-                  "headImg": info.headImg,
-                  "sex": info.sex,
-                  "sign": info.sign,
-                  "remark": info.remark
-                };
-              }
-              return friendList;
-            },
-            messageText: function (item, preItem) {
-              return function (item, preItem) {
-                if (!preItem) {
-                    return Common.formatTime(item.date);
-                }
-                if ((item.date - preItem.date) > 30 * 1000) {
-                    return Common.formatTime(item.date);
-                } else {
-                    return '';
-                }
-              }
+        currentFriendInfo: function () {
+            return this.$store.getters.friendInfo(this.currentFriend.friendId);
+        },
 
-            },
-            isShow: function () {
-              var text = $(this.$refs.msgText).text();
-              if (text) {
-                return true;
-              } else {
-                return false;
-              }
+        groupFriendInfo: function (userId) {
+            return this.$store.getters.currentFriendList(this.currentGroup.groupId) || {};
+        },
+        messageText: function (item, preItem) {
+          return function (item, preItem) {
+            if (!preItem) {
+                return Common.formatTime(item.date);
+            }
+            if ((item.date - preItem.date) > 30 * 1000) {
+                return Common.formatTime(item.date);
+            } else {
+                return '';
+            }
+          }
 
-            }
         },
-        methods: {
-            dateFormat: function (time) {
-                return Common.formatTime(time);
-            }
-        },
-        filters: {
-            errorMsg: function (code) {
-                let msgText = {
-                    '8999': '对方已离线',
-                    '0001': '对方还不是你的好友',
-                    '9998': '处理失败'
-                }
-                return msgText[code];
-            }
-        },
-        watch: {
-            session: {//深度监听，可监听到对象、数组的变化
-                handler () {
-                    let that = this;
-                    that.$nextTick(function () {
-                        let scrollDom = that.$refs['message-box'];
-                        scrollDom.scrollTop = scrollDom.scrollHeight - scrollDom.clientHeight;
-                    });
-                },
-                deep:true
-            },
-            groupSession: {//深度监听，可监听到对象、数组的变化
-                handler () {
-                    let that = this;
-                    that.$nextTick(function () {
-                        let scrollDom = that.$refs['message-box'];
-                        scrollDom.scrollTop = scrollDom.scrollHeight - scrollDom.clientHeight;
-                    });
-                },
-                deep:true
-            }
-        },
-        directives: {
-            // 发送消息后滚动到底部
-            'scroll-bottom' () {
-                // this.$nextTick(function () {
-                //     this.el.scrollTop = this.el.scrollHeight - this.el.clientHeight;
-                // });
-            }
+        isShow: function () {
+          var text = $(this.$refs.msgText).text();
+          if (text) {
+            return true;
+          } else {
+            return false;
+          }
+
         }
+    },
+    methods: {
+        dateFormat: function (time) {
+            return Common.formatTime(time);
+        },
+        ...mapActions([
+            'updateGroupFriendList'
+        ])
+    },
+    filters: {
+        errorMsg: function (code) {
+            let msgText = {
+                '8999': '对方已离线',
+                '0001': '对方还不是你的好友',
+                '9998': '处理失败'
+            }
+            return msgText[code];
+        }
+    },
+    watch: {
+        groupSession: {//深度监听，可监听到对象、数组的变化
+            handler () {
+                let that = this;
+                that.$nextTick(function () {
+                    let scrollDom = that.$refs['message-box'];
+                    scrollDom.scrollTop = scrollDom.scrollHeight - scrollDom.clientHeight;
+                });
+            },
+            deep:true
+        }
+    },
+    directives: {
+        // 发送消息后滚动到底部
+        'scroll-bottom' () {
+            // this.$nextTick(function () {
+            //     this.el.scrollTop = this.el.scrollHeight - this.el.clientHeight;
+            // });
+        }
+    }
 }
 </script>
 <style type="text/css" lang="scss" scoped>

@@ -5,8 +5,11 @@ const mutations = {
         state.friendList = list;
     },
 
-    [types.SET_CURRENTID](state, id) {
-        state.currentFriendId = id;
+    [types.SET_CURRENT_FRIEND](state, data) {
+        state.currentFriend = {
+            friendId: data.id,
+            friendName: data.name
+        }
     },
 
     [types.GET_USERINFO](state, user) {
@@ -17,8 +20,23 @@ const mutations = {
         state.tabType = type;
     },
 
-    [types.SET_GROUPID](state, id) {
-        state.currentGroupId = id;
+    [types.SET_GROUPLIST](state, list) {
+        state.groupList = list;
+    },
+
+    [types.SET_CURRENT_GROUP](state, data) {
+        state.currentGroup = {
+            groupId: data.id,
+            groupName: data.name
+        }
+    },
+
+    [types.SET_SESSIONS](state, sessions) {
+        state.sessions = sessions;
+    },
+
+    [types.SET_GROUP_USER_LIST](state, list) {
+        state.groupFriendList = list;
     }
 
 }

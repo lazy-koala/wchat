@@ -1,16 +1,14 @@
 export const user = state => state.user;
 
+// 当前会话好友
 export const currentFriend = state => state.currentFriend;
-
-// 当前会话好友id
-export const currentFriendId = state => state.currentFriendId;
 
 // 好友会话列表
 export const sessions = state=> state.sessions;
 
-// 当前会话列表
+// 当前好友会话列表
 export const currentSession = (state) => {
-    return state.sessions[state.currentFriendId];
+    return state.sessions[state.currentFriend.friendId];
 }
 
 // 好友信息
@@ -35,9 +33,23 @@ export const groupList = (state) => {
     return state.groupList;
 }
 
-export const currentGroupId = state => state.currentGroupId;
+// 当前会话群组聊天信息
+export const currentGroupSession = (state) => {
+    return state.groupSessions[state.currentGroup.groupId];
+}
 
-export const currentGroupName = state => state.currentGroupName;
+// 当前会话群组id和name
+export const currentGroup = state => state.currentGroup;
+
+// 当前会话全组的好友列表
+export const currentFriendList = (state) => (id) => {
+    let friendList = state.groupFriendList;
+    for(let item in friendList) {
+        if (item == id) {
+            return friendList[item];
+        }
+    }
+}
 
 export const filterKey = state => state.filterKey;
 

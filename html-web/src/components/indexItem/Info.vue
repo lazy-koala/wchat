@@ -17,6 +17,7 @@
 </template>
 <script type="text/javascript">
 import $axios from 'axios';
+import Common from "../../assets/scripts/common.js";
 import InfoCard from '../common/InfoCard';
 import News from '../common/News';
 import SearchFriend from '../SearchFriend';
@@ -42,7 +43,9 @@ export default {
         },
 
         ...mapActions([
-            'getUserInfo'
+            'getUserInfo',
+            'updateFriendApplyList',
+            'updateGroupApplyList'
         ])
     },
     computed: {
@@ -54,35 +57,42 @@ export default {
         let that = this;
 
         // 获取本人基本信息
-        $axios.get('/api/user/get_info', {}).then((res) => {
-            if (res && res.data && res.data.data) {
-                let userInfo = res.data.data || {};
+        Common.axios({
+            url: 'getUserInfo'
+        }).then((res) => {
+            if (res && res.data) {
+                let userInfo = res.data || {};
                 userInfo.isRead = true;
                 that.userId = userInfo.id;
                 that.getUserInfo(userInfo);
             } else {
                 that.$message({
-                    message: res.data.message,
+                    message: res.message,
                     type: 'warning'
                 });
                 return false;
             }
+        }, (error) => {
+
         });
         // 获取未处理申请列表
-        $axios.get('/api/user/friend_apply_list', {}).then((res) => {
-            if (res && res.data && res.data.data) {
-                let newsList = res.data.data.list || [];
-                localStorage.setItem('news-list', newsList);
-                that.$store.commit('INIT_NEWS_LIST', newsList);
+         Common.axios({
+            url: 'getFriendApplyList'
+         }).then((res) => {
+            if (res && res.data) {
+                let newsList = res.data.list || [];
+                // 更新好友请求列表
+                that.updateFriendApplyList(newsList);
             }
         });
 
-        // 获取未处理的群申请列表
-        $axios.get('/api/user/group_apply_list', {}).then((res) => {
-            if (res && res.data && res.data.data) {
-                let newsGroupList = res.data.data.list || [];
-                localStorage.setItem('news-group-list', newsGroupList);
-                that.$store.commit('INIT_GROUP_NEWS_LIST', newsGroupList);
+        // // 获取未处理的群申请列表
+         Common.axios({
+            url: 'getGroupApplyList'
+         }).then((res) => {
+            if (res && res.data) {
+                let newsGroupList = res.data.list || [];
+                that.updateGroupApplyList(newsList);
             }
         });
     }
