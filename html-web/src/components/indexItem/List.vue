@@ -109,8 +109,6 @@ export default {
             }, (error) => {
 
             });
-
-
         },
 
 
@@ -139,7 +137,10 @@ export default {
                 name: user.nickname || user.username
             });
             // 更新朋友列表
-            this.updateFriendList(userList);
+            this.updateFriendList({
+                list: userList,
+                type: 0
+            });
 
             // 初始化好友会话session
             this.updateSessions({
@@ -161,7 +162,10 @@ export default {
                 let group = groupList[0] || {};
                 if (groupList.length > 0) {
                     // 更新群列表
-                    that.updateGroupList(groupList);
+                    that.updateGroupList({
+                        list: groupList,
+                        type: 0
+                    });
                     // 默认当前选中群组为第一个
                     that.updateCurrentGroup({
                         id: group.groupId,

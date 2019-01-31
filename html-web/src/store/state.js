@@ -57,11 +57,26 @@ const state = {
         "sex": "0",                      // * 性别 0-女 1-男 -1-未设置
         "sign": "",                     // * 个性签名
         "remark": "",
-        'id': ''
+        'id': '',
+        'isRead': true //是否有未读消息
     */
     friendList: [],
 
     // 群列表
+    /*
+        "ownerUserId": "111",                  //
+        "ownerUername": "111",              //
+        "ownerNickname": "111",            //
+        "ownerHeadImg": "",                 //
+        "ownerSex": "0",                   //
+        "ownerSign": "lalla",              //
+        "remark": "111",                    //
+        "groupId": "groupIdA",                     // *
+        "groupName": "group11",                    // *
+        "groupNickname": "group11",                // *
+        "groupHeadImg": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT25zoJIJipKHfP-7Dte2GoX0oSWMoi0lRruGAJj2hypP9qKxSZ",                 // *
+        "introduction": "group11"
+    */
     groupList: [],
 
     // 群会话列表
@@ -113,8 +128,8 @@ const state = {
 
     // 过滤出只包含这个key的会话
     filterKey: '',
-    friendNewsList: [],
-    groupNewsList: [],
+    friendApplyList: [],
+    groupApplyList: [],
     tabType: '0', //0 代表好友列表 1代表群组
 }
 

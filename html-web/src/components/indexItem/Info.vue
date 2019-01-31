@@ -5,9 +5,9 @@
                 <info-card :userId="userId" :isSelf="isSelf"></info-card>
                 <p class="name">{{user.nickname}}</p>
             </div>
-            <!-- <news></news>
+            <news></news>
             <search-friend></search-friend>
-            <create-group></create-group> -->
+            <create-group></create-group>
         </header>
         <p class="sign">{{user.sign}}</p>
         <footer>
@@ -22,7 +22,7 @@ import InfoCard from '../common/InfoCard';
 import News from '../common/News';
 import SearchFriend from '../SearchFriend';
 import CreateGroup from '../CreateGroup';
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'User',
@@ -44,8 +44,7 @@ export default {
 
         ...mapActions([
             'getUserInfo',
-            'updateFriendApplyList',
-            'updateGroupApplyList'
+            'updateApplyList'
         ])
     },
     computed: {
@@ -75,26 +74,9 @@ export default {
         }, (error) => {
 
         });
-        // 获取未处理申请列表
-         Common.axios({
-            url: 'getFriendApplyList'
-         }).then((res) => {
-            if (res && res.data) {
-                let newsList = res.data.list || [];
-                // 更新好友请求列表
-                that.updateFriendApplyList(newsList);
-            }
-        });
 
-        // // 获取未处理的群申请列表
-         Common.axios({
-            url: 'getGroupApplyList'
-         }).then((res) => {
-            if (res && res.data) {
-                let newsGroupList = res.data.list || [];
-                that.updateGroupApplyList(newsList);
-            }
-        });
+        this.updateApplyList(true);
+        this.updateApplyList(false);
     }
 }
 </script>
@@ -123,7 +105,11 @@ export default {
     .name {
         display: inline-block;
         margin: 0 0 0 0.15rem;
-        font-size: 0.16rem;
+        font-size: 0.14rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 0.6rem;
     }
     .search {
         padding: 0 0.1rem;

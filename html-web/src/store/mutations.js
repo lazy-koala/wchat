@@ -37,6 +37,18 @@ const mutations = {
 
     [types.SET_GROUP_USER_LIST](state, list) {
         state.groupFriendList = list;
+    },
+
+    [types.SET_GROUP_APPLY_LIST](state, list) {
+        state.groupApplyList = list;
+    },
+
+    [types.SET_FRIEND_APPLY_LIST](state, list) {
+        state.friendApplyList = list;
+    },
+
+    [types.SET_GROUP_SESSIONS](state, sessions) {
+        state.groupSessions =sessions;
     }
 
 }

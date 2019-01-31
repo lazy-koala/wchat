@@ -5,6 +5,7 @@
 </template>
 <script type="text/javascript">
 import {send2Friend, send2Group} from '../../assets/scripts/ws/msgSender.js';
+import { mapGetters, mapActions } from 'vuex';
 export default {
     name: 'TextArea',
     data () {
@@ -12,14 +13,23 @@ export default {
             content: ''
         };
     },
+    computed: {
+        ...mapGetters([
+            'currentGroup',
+            'currentFriend',
+            'user'
+        ])
+    },
     methods: {
+        ...mapActions([
+            'updateGroupSessions'
+        ]),
         onKeyup (e) {
             let that = this;
             let tabIndex = this.$store.state.tabType;
             if (e.keyCode === 13 && that.content.length) {
-                // this.$store.commit('SEND_MESSAGE', this.content);
                 if (tabIndex == 1) {
-                    let groupId = that.$store.state.currentGroupId;
+                    let groupId = that.currentGroup.groupId;
                     if (!groupId) {
                         return false;
                     }
@@ -29,12 +39,21 @@ export default {
                         let sendData = {};
                         sendData.content = that.content;
                         sendData.code = data.code;
-                        that.$store.commit('SEND_GROUP_MESSAGE', sendData);
+                        that.updateGroupSessions({
+                            id: groupId,
+                            session: {
+                                content: sendData.content,
+                                date: new Date().getTime(),
+                                self: true,
+                                userId: that.user.userId,
+                                code: sendData.code
+                            }
+                        });
                         that.content = '';
                     });
 
                 } else {
-                    let toUerId = that.$store.state.currentSessionId;
+                    let toUerId = that.currentFriend.friendId;
                     if (!toUerId) {
                         return false;
                     }
@@ -44,7 +63,15 @@ export default {
                         let sendData = {};
                         sendData.content = that.content;
                         sendData.code = data.code;
-                        that.$store.commit('SEND_MESSAGE', sendData);
+                        that.updateSessions({
+                            id: toUerId,
+                            session: {
+                                content: sendData.content,
+                                date: new Date().getTime(),
+                                self: true,
+                                code: sendData.code
+                            }
+                        });
                         that.content = '';
                     });
                 }

@@ -23,6 +23,16 @@ export const friendInfo = (state) => (id) => {
     return state.user;
 }
 
+// 群组信息
+export const GroupInfo = (state) => (id) => {
+    let groupList = state.groupList;
+    for(let item in groupList) {
+        if (groupList[item].groupId == id) {
+            return groupList[item];
+        }
+    }
+}
+
 // 好友列表
 export const friendList = (state) => {
     return state.friendList;
@@ -53,11 +63,12 @@ export const currentFriendList = (state) => (id) => {
 
 export const filterKey = state => state.filterKey;
 
-// 消息列表
-export const friendNewsList = state => state.friendNewsList;
-
-export const groupNewsList = state => state.groupNewsList;
-
-
 // tab类型获取
 export const tabType = state => state.tabType;
+
+
+// 好友申请列表
+export const friendApplyList = state => state.friendApplyList;
+
+// 申请加群列表
+export const groupApplyList = state => state.groupApplyList;
