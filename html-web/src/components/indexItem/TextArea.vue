@@ -22,7 +22,8 @@ export default {
     },
     methods: {
         ...mapActions([
-            'updateGroupSessions'
+            'updateGroupSessions',
+            'updateSessions'
         ]),
         onKeyup (e) {
             let that = this;

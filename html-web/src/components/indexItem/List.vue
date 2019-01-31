@@ -155,7 +155,7 @@ export default {
         // 获取群组列表
         Common.axios({
             url: 'getGroupList',
-            params: {type: '1'}
+            data: {type: '1'}
         }).then((res) => {
             if (res && res.data && res.data.list) {
                 let groupList = res.data.list || [];

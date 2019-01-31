@@ -69,15 +69,14 @@ export default {
           var name = '';
           var info;
           var headImg;
-
           if (isGroup) {
             info = that.$store.getters.GroupInfo(id)
-            name = info ? (info.groupInfo.groupNickname || info.groupInfo.groupName) : '';
-            headImg = info ? info.groupInfo.groupHeadImg : '';
+            name = info ? (info.groupNickname || info.groupName) : '';
+            headImg = info ? info.groupHeadImg : '';
           } else {
             info = that.$store.getters.friendInfo(id);
-            headImg = info ? info.user.headImg : '';
-            name = info ? (info.user.nickname || info.user.username) : '';
+            headImg = info ? info.headImg : '';
+            name = info ? (info.nickname || info.username) : '';
           }
           var notification = new Notification("新消息提示", {
               body: name ? '哎呦，你有来自' + name + '的新消息~' : '哎呦，你有新消息~',
@@ -134,7 +133,7 @@ export default {
                     session: {}
                 };
                 item.session = {
-                    content: data.data.msg,
+                    content: data.msg,
                     date: new Date().getTime(),
                     self: false
                 }
@@ -152,7 +151,7 @@ export default {
                 };
 
                 item.session = {
-                    content: data.data.msg,
+                    content: data.msg,
                     date: new Date().getTime(),
                     self: false,
                     userId: data.fromUserId

@@ -125,10 +125,10 @@ export const updateSessions = function ({commit, state}, data) {
     let sessions = JSON.parse(JSON.stringify(state.sessions));
     let session = data.session || {};
     let tempLen = sessions[data.id] ? sessions[data.id].length : 0;
-    if (JSON.stringify(session) == '{}' && !tempLen) {
+    if (JSON.stringify(session) == '{}' || tempLen == 0) {
         sessions[data.id] = [];
     } else {
-        sessions[data.id].splice(tempLen - 1, 0, session);
+       sessions[data.id].splice(tempLen - 1, 0, session);
     }
 
     // 若接受消息不是当前会话好友的消息，则需要将好友头像上添加未读标记
@@ -140,7 +140,7 @@ export const updateSessions = function ({commit, state}, data) {
 
     // 若当前消息不是当前会话好友的，将接受消息的好友置顶
     if (data.id != state.currentFriend.friendId) {
-        let indx = findIndex(currentFriendList, data.id);
+        let indx = findIdx(currentFriendList, data.id);
         if (indx != -1 && indx != 0) {
             let item = currentFriendList[indx];
             currentFriendList.splice(idx, 1);
@@ -159,7 +159,7 @@ export const updateGroupSessions = function ({commit, state}, data) {
     let tempLen = sessions[data.id] ? sessions[data.id].length : 0;
     let currentGroupList = [...state.groupList] || [];
 
-    if (JSON.stringify(session) == '{}' && !tempLen) {
+    if (JSON.stringify(session) == '{}' || tempLen == 0) {
         sessions[data.id] = [];
     } else {
         sessions[data.id].splice(tempLen - 1, 0, session);
@@ -174,7 +174,7 @@ export const updateGroupSessions = function ({commit, state}, data) {
 
     // 若当前消息不是当前会话好友的，将接受消息的好友置顶
     if (data.id != state.currentGroupList.groupId) {
-        let indx = findIndex(currentGroupList, data.id);
+        let indx = findIdx(currentGroupList, data.id);
         if (indx != -1 && indx != 0) {
             let item = currentGroupList[indx];
             currentGroupList.splice(idx, 1);
