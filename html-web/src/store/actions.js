@@ -38,27 +38,33 @@ function getNewList(currentList, list, isGroup) {
     }
 */
 export const updateFriendList = function ({commit, state}, data) {
-    let currentList = [...state.friendList] || [];
+    let currentList = JSON.parse(JSON.stringify(state.friendList));
     let retList = [];
+    console.log('updateFriendList', data.type, data);
     switch (data.type) {
         case 0:  //初始化好友列表
             retList = getNewList(currentList, data.list, false);
+            commit(types.SET_FRIENDLIST, retList);
             break;
         case 1: // 接受添加好友的请求 || 对方添加你成功
             // 好友列表添加一条
-            retList = currentList.push(list[0]);
+            let item = data.list[0];
+            currentList.push(item);
+            commit(types.SET_FRIENDLIST, currentList);
             // 会话列表初始化一条数据
-            updateSessions({
-                id: data.list[0].userId
+            updateSessions({commit, state},{
+                id: item.userId,
+                name: item.nickname || item.username,
+                session: {}
             })
             break;
         case 2: //更新好友在线状态
             let tempData = data.list;
-            let freindInfo = findItem(currentList, tempData.fromUserId, 'userId');
-            friendInfo.status = tempData.status;
+            let friendInfo = findItem(currentList, tempData.fromUserId, 'userId') || {};
+            friendInfo.status = tempData.data.status || '0';
             retList = currentList;
+            commit(types.SET_FRIENDLIST, retList);
     }
-    commit(types.SET_FRIENDLIST, retList);
 }
 
 
@@ -80,7 +86,7 @@ export const updateGroupList = function ({commit, state}, data) {
             // 群列表添加一条
             retList = currentList.push(list[0]);
             // 会话列表初始化一条数据
-            updateGroupSessions({
+            updateGroupSessions({commit, state}, {
                 id: data.list[0].groupId
             })
             break;
@@ -121,12 +127,17 @@ export const updateCurrentGroup = function ({commit, state}, data) {
     }
 */
 export const updateSessions = function ({commit, state}, data) {
-    let currentFriendList = [...state.friendList] || [];
-    let sessions = JSON.parse(JSON.stringify(state.sessions));
+    let currentFriendList = JSON.parse(JSON.stringify(state.friendList)) || [];
+    let sessions = JSON.parse(JSON.stringify(state.sessions)) || [];
     let session = data.session || {};
     let tempLen = sessions[data.id] ? sessions[data.id].length : 0;
     if (JSON.stringify(session) == '{}' || tempLen == 0) {
         sessions[data.id] = [];
+        sessions[data.id].push(session);
+        updateCurrentFriend({commit, state}, {
+            id: data.id,
+            name: data.name
+        })
     } else {
        sessions[data.id].splice(tempLen - 1, 0, session);
     }
@@ -141,9 +152,9 @@ export const updateSessions = function ({commit, state}, data) {
     // 若当前消息不是当前会话好友的，将接受消息的好友置顶
     if (data.id != state.currentFriend.friendId) {
         let indx = findIdx(currentFriendList, data.id);
-        if (indx != -1 && indx != 0) {
+        if (indx != -1) {
             let item = currentFriendList[indx];
-            currentFriendList.splice(idx, 1);
+            currentFriendList.splice(indx, 1);
             currentFriendList.splice(0, 0, item);
         }
         commit(types.SET_FRIENDLIST, currentFriendList);

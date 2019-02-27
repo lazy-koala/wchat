@@ -97,7 +97,8 @@ export default {
         ...mapActions([
             'updateSessions',
             'updateApplyList',
-            'updateGroupFriendList'
+            'updateGroupFriendList',
+            'updateFriendList'
         ]),
         // 更新群成员列表
         getGroupUserList: function (groupId) {
@@ -133,7 +134,7 @@ export default {
                     session: {}
                 };
                 item.session = {
-                    content: data.msg,
+                    content: data.data.msg,
                     date: new Date().getTime(),
                     self: false
                 }
@@ -182,13 +183,13 @@ export default {
                         "sex": result.sex || '',
                         "sign": result.sign || '',
                         "remark": result.remark || '',
-                        'id': result.userId,
+                        'userId': result.userId,
                         'status': result.status || '1',
                         'isRead': true
                     };
-
+                    tempList.push(tempItem)
                     that.updateFriendList({
-                        list: tempList.push(tempItem),
+                        list: tempList,
                         type: 1
                     });
 
@@ -231,8 +232,9 @@ export default {
                         "ownerUserId": result.ownerUserId,
                         "isRead": true
                     };
+                    tempList.push(tempItem)
                     that.updateGroupList({
-                        list: tempList.push(tempItem),
+                        list: tempList,
                         type: 1
                     });
 

@@ -108,8 +108,9 @@
                                     "ownerUserId": reqInfo.ownerUserId,
                                     "isRead": true
                                 };
+                                tempList.push(tempItem)
                                 that.updateGroupList({
-                                    list: tempList.push(tempItem),
+                                    list: tempList,
                                     type: 1
                                 });
                                 //更新群请求消息列表
@@ -121,8 +122,8 @@
                                 });
                                 that.showNewsBox = false;
                             } else {
-                                // 处理成功后更新朋友列表
                                 let tempList = [];
+                                // 处理成功后更新朋友列表
                                 let tempItem = {
                                     "username": reqInfo.username || '',
                                     "nickname": reqInfo.nickname || '',
@@ -130,12 +131,13 @@
                                     "sex": reqInfo.sex || '',
                                     "sign": reqInfo.sign || '',
                                     "remark": reqInfo.remark || '',
-                                    'id': reqInfo.userId,
+                                    'userId': reqInfo.fromUserId,
                                     'status': reqInfo.status || '1',
                                     'isRead': true
                                 };
+                                tempList.push(tempItem)
                                 that.updateFriendList({
-                                    list: tempList.push(tempItem),
+                                    list: tempList,
                                     type: 1
                                 });
 

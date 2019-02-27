@@ -31,22 +31,7 @@ const state = {
 
         ]
     **/
-    sessions: {
-        '111': [
-            {
-                content: 'testtesttesttesttesttesttesttest',
-                date: 1548830741228,
-                self: true,
-                code: ''
-            },
-            {
-                content: 'testtesttesttesttesttesttesttest',
-                date: 1548830745228,
-                self: false,
-                code: ''
-            }
-        ]
-    },
+    sessions: {},
 
     // 好友列表
     /*
