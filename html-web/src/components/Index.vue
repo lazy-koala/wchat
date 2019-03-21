@@ -98,7 +98,9 @@ export default {
             'updateSessions',
             'updateApplyList',
             'updateGroupFriendList',
-            'updateFriendList'
+            'updateFriendList',
+            'updateGroupList',
+            'updateGroupSessions'
         ]),
         // 更新群成员列表
         getGroupUserList: function (groupId) {
@@ -152,7 +154,7 @@ export default {
                 };
 
                 item.session = {
-                    content: data.msg,
+                    content: data.data.msg || "",
                     date: new Date().getTime(),
                     self: false,
                     userId: data.fromUserId

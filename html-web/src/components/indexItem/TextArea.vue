@@ -46,7 +46,7 @@ export default {
                                 content: sendData.content,
                                 date: new Date().getTime(),
                                 self: true,
-                                userId: that.user.userId,
+                                userId: that.user.id,
                                 code: sendData.code
                             }
                         });

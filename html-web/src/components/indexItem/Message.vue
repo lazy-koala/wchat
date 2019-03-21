@@ -124,7 +124,7 @@ export default {
         }
     },
     watch: {
-        groupSession: {//深度监听，可监听到对象、数组的变化
+        currentSession: {//深度监听，可监听到对象、数组的变化
             handler () {
                 let that = this;
                 that.$nextTick(function () {
@@ -138,9 +138,9 @@ export default {
     directives: {
         // 发送消息后滚动到底部
         'scroll-bottom' () {
-            // this.$nextTick(function () {
-            //     this.el.scrollTop = this.el.scrollHeight - this.el.clientHeight;
-            // });
+            this.$nextTick(function () {
+                this.el.scrollTop = this.el.scrollHeight - this.el.clientHeight;
+            });
         }
     }
 }

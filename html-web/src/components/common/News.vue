@@ -100,7 +100,7 @@
                                 // that.$store.commit('UPDATE_GROUPSESSIONS_LIST', reqInfo);
                                 let tempList = [];
                                 let tempItem = {
-                                    "groupId": reqInfo.groupId || reqInfo._id,
+                                    "groupId": reqInfo.groupApplyId || reqInfo._id,
                                     "groupHeadImg": reqInfo.headImg || reqInfo.groupHeadImg,
                                     "groupName": reqInfo.groupName,           // * 群组帐号
                                     "groupNickname": reqInfo.groupNickname || '' ,        // * 群组名称

@@ -38,6 +38,9 @@
 </template>
 <script type="text/javascript">
     import $axios from 'axios';
+    import { mapActions } from 'vuex';
+    import Common from "../assets/scripts/common.js";
+
     export default {
         name: 'createGroup',
         data() {
@@ -52,6 +55,10 @@
             }
         },
         methods: {
+            ...mapActions([
+            'updateGroupList',
+            'updateGroupFriendList'
+          ]),
             closeDialog: function () {
 
             },
@@ -92,7 +99,7 @@
                 if (dom == 'desc') {
                     that.desc = val;
                     $dom.removeClass('alert-validate');
-                } 
+                }
             },
             focusHandle: function (dom, event) {
                 var $target = $(event.target);
@@ -123,24 +130,29 @@
                             $(that.$refs['group-dom']).find('input').removeClass('has-val');
                             $(that.$refs['nick-dom']).find('input').removeClass('has-val');
                             $(that.$refs['desc-dom']).find('input').removeClass('has-val');
-                            that.$store.commit('UPDATE_GROUPSESSIONS_LIST', res.data.data);
+                            // that.$store.commit('UPDATE_GROUPSESSIONS_LIST', res.data.data);
 
-                            let groupInfo = res.data.data || {};
-                            // 如果是第一个群组的话，初始化为current群组
-                            let groupSessions = that.$store.state.groupSessions;
-                            let currentInfo = {
-                              id: groupInfo.groupId,
-                              name: groupInfo.groupNickname || groupInfo.groupName
+                            let result = res.data.data || {};
+                            let tempList = [];
+                            let tempItem = {
+                                "groupId": result.groupId || result._id,
+                                "groupHeadImg": result.headImg || result.groupHeadImg,
+                                "groupName": result.groupName,           // * 群组帐号
+                                "groupNickname": result.groupNickname || '' ,        // * 群组名称
+                                "introduction": result.introduction || '',
+                                "ownerUserId": result.ownerUserId,
+                                "isRead": true
                             };
-                            if (groupSessions.length == 0) {
-                              that.$store.commit('SELECT_GROUP_SESSION', currentInfo);
-                            }
+                            tempList.push(tempItem)
+                            that.updateGroupList({
+                                list: tempList,
+                                type: 0
+                            });
+
                             // 更新群组成员
-                            let friendList = {
-                              groupId: groupInfo.groupId,
-                              isAdd: true
-                            };
-                            that.$store.commit('UPDATE_GROUP_FRIENDLIST', friendList);
+                            that.getGroupUserList(result.groupId);
+
+                            // that.$store.commit('UPDATE_GROUP_FRIENDLIST', friendList);
                         } else {
                             that.$message({
                                 message: res.data.message,
@@ -156,7 +168,24 @@
                       });
                     });
                 }
-            }
+            },
+
+            // 更新群成员列表
+            getGroupUserList: function (groupId) {
+                var that  = this;
+                Common.axios({
+                    url: 'getGroupFriendList',
+                    data: {
+                        groupId: groupId
+                    }
+                }).then((res) => {
+                    if (res.data) {
+                        that.updateGroupFriendList(res.data[groupId]);
+                    }
+                }, (error) => {
+
+                });
+            },
         }
 
     }

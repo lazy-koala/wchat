@@ -76,7 +76,7 @@ export const updateFriendList = function ({commit, state}, data) {
     }
 */
 export const updateGroupList = function ({commit, state}, data) {
-    let currentList = [...state.groupList] || [];
+    let currentList = JSON.parse(JSON.stringify(state.groupList)) || [];
     let retList = [];
     switch (data.type) {
         case 0:  //初始化群组列表
@@ -84,7 +84,7 @@ export const updateGroupList = function ({commit, state}, data) {
             break;
         case 1: // 申请请求入群统一
             // 群列表添加一条
-            retList = currentList.push(list[0]);
+            retList = currentList.push(data.list[0]);
             // 会话列表初始化一条数据
             updateGroupSessions({commit, state}, {
                 id: data.list[0].groupId
@@ -150,7 +150,7 @@ export const updateSessions = function ({commit, state}, data) {
     }
 
     // 若当前消息不是当前会话好友的，将接受消息的好友置顶
-    if (data.id != state.currentFriend.friendId) {
+    if (!state.currentFriend.friendId || data.id != state.currentFriend.friendId) {
         let indx = findIdx(currentFriendList, data.id);
         if (indx != -1) {
             let item = currentFriendList[indx];
@@ -168,12 +168,13 @@ export const updateGroupSessions = function ({commit, state}, data) {
     let sessions = JSON.parse(JSON.stringify(state.groupSessions));
     let session = data.session || {};
     let tempLen = sessions[data.id] ? sessions[data.id].length : 0;
-    let currentGroupList = [...state.groupList] || [];
+    let currentGroupList = JSON.parse(JSON.stringify(state.groupList)) || [];
 
     if (JSON.stringify(session) == '{}' || tempLen == 0) {
         sessions[data.id] = [];
+        sessions[data.id].push(session);
     } else {
-        sessions[data.id].splice(tempLen - 1, 0, session);
+        sessions[data.id].splice(tempLen, 0, session);
     }
 
     // 若接受消息不是当前会话群组的消息，则需要将群组头像上添加未读标记
@@ -184,7 +185,7 @@ export const updateGroupSessions = function ({commit, state}, data) {
     }
 
     // 若当前消息不是当前会话好友的，将接受消息的好友置顶
-    if (data.id != state.currentGroupList.groupId) {
+    if (!state.currentGroup.groupId || data.id != state.currentGroup.groupId) {
         let indx = findIdx(currentGroupList, data.id);
         if (indx != -1 && indx != 0) {
             let item = currentGroupList[indx];
