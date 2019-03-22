@@ -3,7 +3,7 @@ import Common from "../assets/scripts/common.js";
 
 function findIdx(list, id) {
     return list.findIndex(function(item, index, arr) {
-        return item.userId == id;
+        return item.userId == id || item.groupId == id;
     });
 }
 
@@ -40,7 +40,6 @@ function getNewList(currentList, list, isGroup) {
 export const updateFriendList = function ({commit, state}, data) {
     let currentList = JSON.parse(JSON.stringify(state.friendList));
     let retList = [];
-    console.log('updateFriendList', data.type, data);
     switch (data.type) {
         case 0:  //初始化好友列表
             retList = getNewList(currentList, data.list, false);
@@ -96,7 +95,13 @@ export const updateGroupList = function ({commit, state}, data) {
 
 // 更新当前会话好友
 export const updateCurrentFriend = function ({commit, state}, data) {
-    commit(types.SET_CURRENT_FRIEND, data);
+    if(data.id != state.currentFriend.friendId) {
+        commit(types.SET_CURRENT_FRIEND, data);
+    }
+    let currentFriendList = JSON.parse(JSON.stringify(state.friendList)) || [];
+    let friendInfo = findItem(currentFriendList, data.id, 'userId');
+    friendInfo.isRead = true;
+    commit(types.SET_FRIENDLIST, currentFriendList);
 }
 
 // 获取当前登陆用户的基本信息
@@ -110,8 +115,15 @@ export const updateType = function ({commit, state}, type) {
 }
 
 // 更新当前选中群组
+// 更新当前选中群组未读状态
 export const updateCurrentGroup = function ({commit, state}, data) {
-    commit(types.SET_CURRENT_GROUP, data);
+    if(data.id != state.currentGroup.groupId) {
+        commit(types.SET_CURRENT_GROUP, data);
+    }
+    let currentGroupList = JSON.parse(JSON.stringify(state.groupList)) || [];
+    let groupInfo = findItem(currentGroupList, data.id, 'groupId');
+    groupInfo.isRead = true;
+    commit(types.SET_GROUPLIST, currentGroupList);
 }
 
 // 更新好友会话消息
@@ -134,12 +146,8 @@ export const updateSessions = function ({commit, state}, data) {
     if (JSON.stringify(session) == '{}' || tempLen == 0) {
         sessions[data.id] = [];
         sessions[data.id].push(session);
-        updateCurrentFriend({commit, state}, {
-            id: data.id,
-            name: data.name
-        })
     } else {
-       sessions[data.id].splice(tempLen - 1, 0, session);
+       sessions[data.id].splice(tempLen, 0, session);
     }
 
     // 若接受消息不是当前会话好友的消息，则需要将好友头像上添加未读标记
@@ -148,16 +156,17 @@ export const updateSessions = function ({commit, state}, data) {
         friendInfo.isRead = false;
         commit(types.SET_FRIENDLIST, currentFriendList);
     }
-
+    let newFriendList = JSON.parse(JSON.stringify(currentFriendList)) || [];
+    let currentFriendId = state.currentFriend.friendId;
     // 若当前消息不是当前会话好友的，将接受消息的好友置顶
-    if (!state.currentFriend.friendId || data.id != state.currentFriend.friendId) {
-        let indx = findIdx(currentFriendList, data.id);
+    if (!currentFriendId || data.id != currentFriendId || currentFriendId != newFriendList[0].id) {
+        let indx = findIdx(newFriendList, data.id);
         if (indx != -1) {
-            let item = currentFriendList[indx];
-            currentFriendList.splice(indx, 1);
-            currentFriendList.splice(0, 0, item);
+            let item = newFriendList[indx];
+            newFriendList.splice(indx, 1);
+            newFriendList.splice(0, 0, item);
         }
-        commit(types.SET_FRIENDLIST, currentFriendList);
+        commit(types.SET_FRIENDLIST, newFriendList);
     }
 
     commit(types.SET_SESSIONS, sessions);
@@ -168,7 +177,7 @@ export const updateGroupSessions = function ({commit, state}, data) {
     let sessions = JSON.parse(JSON.stringify(state.groupSessions));
     let session = data.session || {};
     let tempLen = sessions[data.id] ? sessions[data.id].length : 0;
-    let currentGroupList = JSON.parse(JSON.stringify(state.groupList)) || [];
+    let currentGList = JSON.parse(JSON.stringify(state.groupList));
 
     if (JSON.stringify(session) == '{}' || tempLen == 0) {
         sessions[data.id] = [];
@@ -179,21 +188,23 @@ export const updateGroupSessions = function ({commit, state}, data) {
 
     // 若接受消息不是当前会话群组的消息，则需要将群组头像上添加未读标记
     if (session.content && data.id != state.currentGroup.groupId) {
-        let groupInfo = findItem(currentGroupList, data.id, 'groupId');
+        let groupInfo = findItem(currentGList, data.id, 'groupId');
         groupInfo.isRead = false;
-        commit(types.SET_FRIENDLIST, currentGroupList);
+        commit(types.SET_FRIENDLIST, currentGList);
     }
-
-    // 若当前消息不是当前会话好友的，将接受消息的好友置顶
-    if (!state.currentGroup.groupId || data.id != state.currentGroup.groupId) {
-        let indx = findIdx(currentGroupList, data.id);
-        if (indx != -1 && indx != 0) {
-            let item = currentGroupList[indx];
-            currentGroupList.splice(idx, 1);
-            currentGroupList.splice(0, 0, item);
+    let currentGroupId = state.currentGroup.groupId;
+    let newCurrentGList = JSON.parse(JSON.stringify(currentGList));
+    // 若当前消息不是当前会话好友的，将接受消息的群置顶
+    // 若当前发消息的群不是置顶的，则置顶改群
+    if (!currentGroupId || data.id != currentGroupId ||  data.id != newCurrentGList[0].groupId) {
+        let idx = findIdx(newCurrentGList, data.id);
+        if (idx != -1 && idx != 0) {
+            let item = newCurrentGList[idx];
+            newCurrentGList.splice(idx, 1);
+            newCurrentGList.splice(0, 0, item);
         }
 
-        commit(types.SET_GROUPLIST, currentGroupList);
+        commit(types.SET_GROUPLIST, newCurrentGList);
     }
 
     commit(types.SET_GROUP_SESSIONS, sessions);

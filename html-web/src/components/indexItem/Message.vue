@@ -37,8 +37,10 @@
                     </p>
                     <div class="main" v-if="!item.self && !item.isGroupJoinResult">
                         <div class="head-wrapper">
-                            <p>{{groupFriendInfo.nickname || groupFriendInfo.username}}</p>
-                            <img :src="groupFriendInfo.headImg" />
+                            <!-- <p>{{groupFriendInfo[groupSession[index].userId]}}</p> -->
+                            <!-- <p>{{groupFriendInfo[groupSession[index].userId].nickname || groupFriendInfo[groupSession[index].userId].username}}</p> -->
+                            <p>{{groupFriendInfo(groupSession[index].userId).nickname}}</p>
+                            <img :src="groupFriendInfo(groupSession[index].userId).headImg" />
                         </div>
                         <div class="msg-text group">{{ item.content }}</div>
                     </div>
@@ -80,7 +82,22 @@ export default {
         },
 
         groupFriendInfo: function (userId) {
-            return this.$store.getters.currentFriendList(this.currentGroup.groupId) || {};
+            return function (userId) {
+                let groupFriendInfo = this.$store.getters.currentFriendList(this.currentGroup.groupId) || {};
+                // console.log('groupFriendInfo', groupFriendInfo);
+                let userInfo = groupFriendInfo[userId] || {};
+                if (JSON.stringify(userInfo) == '{}') {
+                    return {
+                        nickname: '未知',
+                        headImg: ''
+                    };
+                } else {
+                    return {
+                        nickname: userInfo.nickname || userInfo.username,
+                        headImg: userInfo.headImg
+                    };
+                }
+            }
         },
         messageText: function (item, preItem) {
           return function (item, preItem) {
@@ -108,10 +125,7 @@ export default {
     methods: {
         dateFormat: function (time) {
             return Common.formatTime(time);
-        },
-        ...mapActions([
-            'updateGroupFriendList'
-        ])
+        }
     },
     filters: {
         errorMsg: function (code) {
@@ -125,6 +139,16 @@ export default {
     },
     watch: {
         currentSession: {//深度监听，可监听到对象、数组的变化
+            handler () {
+                let that = this;
+                that.$nextTick(function () {
+                    let scrollDom = that.$refs['message-box'];
+                    scrollDom.scrollTop = scrollDom.scrollHeight - scrollDom.clientHeight;
+                });
+            },
+            deep:true
+        },
+        groupSession: {
             handler () {
                 let that = this;
                 that.$nextTick(function () {

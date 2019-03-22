@@ -66,11 +66,12 @@ export default {
                     id: item.groupId,
                     name: item.groupNickname || item.groupName
                 };
+
                 // 跟新当前所选群组
                 this.updateCurrentGroup(group);
 
                 // 获取当前所选群组的好友列表
-                this.getGroupUserList(this.currentGroup.groupId);
+                this.getGroupUserList(this.currentGroup.groupId, group);
 
             } else {
                 // 更新当前所选好友
@@ -94,7 +95,7 @@ export default {
             this.updateType(type.index);
         },
 
-        getGroupUserList: function (groupId) {
+        getGroupUserList: function (groupId, group) {
             var that  = this;
             Common.axios({
                 url: 'getGroupFriendList',
