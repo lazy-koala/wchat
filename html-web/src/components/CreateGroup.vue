@@ -38,7 +38,7 @@
 </template>
 <script type="text/javascript">
     import $axios from 'axios';
-    import { mapActions } from 'vuex';
+    import { mapActions} from 'vuex';
     import Common from "../assets/scripts/common.js";
 
     export default {
@@ -56,9 +56,10 @@
         },
         methods: {
             ...mapActions([
-            'updateGroupList',
-            'updateGroupFriendList'
-          ]),
+              'updateGroupList',
+              'updateGroupFriendList',
+              'updateCurrentGroup'
+            ]),
             closeDialog: function () {
 
             },
@@ -148,7 +149,6 @@
                                 list: tempList,
                                 type: 0
                             });
-
                             // 更新群组成员
                             that.getGroupUserList(result.groupId);
 

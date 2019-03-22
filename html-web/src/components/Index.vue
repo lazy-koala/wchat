@@ -241,7 +241,7 @@ export default {
                     });
 
                     // 更新新群组成员数据
-                    that.getGroupUserList();
+                    that.getGroupUserList(result.groupId);
 
                 } else if (!resule.agree && userId != result.ownerUserId) {
                     that.$notify({

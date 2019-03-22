@@ -76,21 +76,24 @@ export const updateFriendList = function ({commit, state}, data) {
 */
 export const updateGroupList = function ({commit, state}, data) {
     let currentList = JSON.parse(JSON.stringify(state.groupList)) || [];
-    let retList = [];
     switch (data.type) {
         case 0:  //初始化群组列表
-            retList = getNewList(currentList, data.list, true);;
+            currentList = getNewList(currentList, data.list, true);;
             break;
         case 1: // 申请请求入群统一
             // 群列表添加一条
-            retList = currentList.push(data.list[0]);
-            // 会话列表初始化一条数据
-            updateGroupSessions({commit, state}, {
-                id: data.list[0].groupId
-            })
+            currentList.push(data.list[0]);
+
             break;
     }
-    commit(types.SET_GROUPLIST, retList);
+    if (JSON.stringify(state.currentGroup) == '{}') {
+        // 会话列表初始化一条数据
+        updateGroupSessions({commit, state}, {
+            groupId: currentList[0].groupId,
+            groupName: currentList[0].groupNickname || currentList[0].groupName
+        })
+    }
+    commit(types.SET_GROUPLIST, currentList);
 }
 
 // 更新当前会话好友
@@ -190,7 +193,7 @@ export const updateGroupSessions = function ({commit, state}, data) {
     if (session.content && data.id != state.currentGroup.groupId) {
         let groupInfo = findItem(currentGList, data.id, 'groupId');
         groupInfo.isRead = false;
-        commit(types.SET_FRIENDLIST, currentGList);
+        commit(types.SET_GROUPLIST, currentGList);
     }
     let currentGroupId = state.currentGroup.groupId;
     let newCurrentGList = JSON.parse(JSON.stringify(currentGList));
