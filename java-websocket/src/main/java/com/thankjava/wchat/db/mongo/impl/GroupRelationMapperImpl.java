@@ -3,6 +3,7 @@ package com.thankjava.wchat.db.mongo.impl;
 import com.thankjava.wchat.consts.MongoTableName;
 import com.thankjava.wchat.db.entity.GroupRelation;
 import com.thankjava.wchat.db.mongo.GroupRelationMapper;
+import org.bson.Document;
 
 import java.util.List;
 
@@ -33,6 +34,11 @@ public class GroupRelationMapperImpl implements GroupRelationMapper {
 
     @Override
     public void deleteById(String id) {
+
+    }
+
+    public List<GroupRelation> selectByGroupId(String groupId) {
+        return mongo.findMany(tableName, new Document("groupId", groupId), GroupRelation.class);
 
     }
 }

@@ -1,5 +1,7 @@
 package com.thankjava.wchat.bean.notice.group;
 
+import java.util.List;
+
 public class GroupAddReplyPush {
 
     private boolean agree;
@@ -9,6 +11,7 @@ public class GroupAddReplyPush {
     private String groupHeadImg;
     private String ownerUserId;
     private String introduction;
+    private List<GroupUser> groupUsers;
 
     public boolean isAgree() {
         return agree;
@@ -64,5 +67,13 @@ public class GroupAddReplyPush {
 
     public void setOwnerUserId(String ownerUserId) {
         this.ownerUserId = ownerUserId;
+    }
+
+    public List<GroupUser> getGroupUsers() {
+        return groupUsers;
+    }
+
+    public void setGroupUsers(List<GroupUser> groupUsers) {
+        this.groupUsers = groupUsers;
     }
 }

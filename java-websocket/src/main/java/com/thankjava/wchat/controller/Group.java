@@ -9,6 +9,7 @@ import com.thankjava.wchat.bean.controller.group.GroupAddReply;
 import com.thankjava.wchat.bean.notice.group.GroupAddPush;
 import com.thankjava.wchat.bean.notice.group.GroupAddReplyPush;
 import com.thankjava.wchat.bean.notice.group.GroupJoinPush;
+import com.thankjava.wchat.bean.notice.group.GroupUser;
 import com.thankjava.wchat.consts.EventType;
 import com.thankjava.wchat.consts.ResponseCode;
 import com.thankjava.wchat.db.entity.GroupApply;
@@ -26,6 +27,7 @@ import com.thankjava.wchat.notice.GroupEventPush;
 import com.thankjava.wchat.ws.anno.WSController;
 import com.thankjava.wchat.ws.anno.WSProcess;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @WSController(path = "group")
@@ -134,6 +136,26 @@ public class Group {
         groupAddReplyPush.setOwnerUserId(groupInfo.getOwnerUserId());
         groupAddReplyPush.setGroupName(groupInfo.getGroupName());
 
+        // 向成员推送新用户入群通知
+        GroupJoinPush groupJoinPush = BeanCopierUtil.copy(groupAddReplyPush, GroupJoinPush.class);
+
+        BeanCopierUtil.append(userMapper.selectById(groupApply.getApplyUserId()), groupJoinPush);
+        groupJoinPush.setUserId(groupApply.getApplyUserId());
+
+        GroupRelation groupRelation = new GroupRelation();
+        groupRelation.setUserId(groupApply.getApplyUserId());
+        groupRelation.setGroupId(groupInfo.getId());
+
+        groupRelationMapper.insert(groupRelation);
+
+        List<GroupUser> groupUsers = new ArrayList<>();
+        List<GroupRelation> groupRelations = groupRelationMapper.selectByGroupId(groupAddReply.getGroupApplyId());
+        for (GroupRelation g : groupRelations) {
+            groupUsers.add(BeanCopierUtil.copy(userMapper.selectById(g.getUserId()),GroupUser.class));
+        }
+
+        groupAddReplyPush.setGroupUsers(groupUsers);
+
         // 向申请人推送结果
         groupEventPush.pushGroupAddReply(new MsgPushContext<>(
                 EventType.group_add_result,
@@ -144,18 +166,6 @@ public class Group {
 
 
         if (groupAddReply.getAgree()) {
-
-            // 向成员推送新用户入群通知
-            GroupJoinPush groupJoinPush = BeanCopierUtil.copy(groupAddReplyPush, GroupJoinPush.class);
-
-            BeanCopierUtil.append(userMapper.selectById(groupApply.getApplyUserId()), groupJoinPush);
-            groupJoinPush.setUserId(groupApply.getApplyUserId());
-
-            GroupRelation groupRelation = new GroupRelation();
-            groupRelation.setUserId(groupApply.getApplyUserId());
-            groupRelation.setGroupId(groupInfo.getId());
-
-            groupRelationMapper.insert(groupRelation);
 
             groupEventPush.pushGroupUserJoin(new MsgPushContext<>(
                     EventType.group_join,

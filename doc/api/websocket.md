@@ -330,7 +330,8 @@
                     "userId": "成员userId",
                     "nickname": "成员昵称",
                     "headImg": "成员头像",
-                    "username": "成员帐号"
+                    "username": "成员帐号",
+                    "sex": "性别"
                 }
             ]
           },
