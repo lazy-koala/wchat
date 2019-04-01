@@ -14,6 +14,7 @@ public class WSUtil {
 
     private static WS ws;
     private static ThreadPool threadPool = new ThreadPool();
+    static Logger logger = LoggerFactory.getLogger(WSUtil.class);
 
     /**
      * 同步发起通知

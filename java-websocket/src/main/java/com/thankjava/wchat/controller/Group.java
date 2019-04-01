@@ -136,7 +136,6 @@ public class Group {
         groupAddReplyPush.setOwnerUserId(groupInfo.getOwnerUserId());
         groupAddReplyPush.setGroupName(groupInfo.getGroupName());
 
-        // 向成员推送新用户入群通知
         GroupJoinPush groupJoinPush = BeanCopierUtil.copy(groupAddReplyPush, GroupJoinPush.class);
 
         BeanCopierUtil.append(userMapper.selectById(groupApply.getApplyUserId()), groupJoinPush);
@@ -149,9 +148,9 @@ public class Group {
         groupRelationMapper.insert(groupRelation);
 
         List<GroupUser> groupUsers = new ArrayList<>();
-        List<GroupRelation> groupRelations = groupRelationMapper.selectByGroupId(groupAddReply.getGroupApplyId());
+        List<GroupRelation> groupRelations = groupRelationMapper.selectByGroupId(groupInfo.getId());
         for (GroupRelation g : groupRelations) {
-            groupUsers.add(BeanCopierUtil.copy(userMapper.selectById(g.getUserId()),GroupUser.class));
+            groupUsers.add(BeanCopierUtil.copy(userMapper.selectById(g.getUserId()), GroupUser.class));
         }
 
         groupAddReplyPush.setGroupUsers(groupUsers);
@@ -166,7 +165,7 @@ public class Group {
 
 
         if (groupAddReply.getAgree()) {
-
+            // 向成员推送新用户入群通知
             groupEventPush.pushGroupUserJoin(new MsgPushContext<>(
                     EventType.group_join,
                     ctx.getFromUserId(),
