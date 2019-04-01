@@ -61,6 +61,16 @@ export const currentFriendList = (state) => (id) => {
     }
 }
 
+// 某群组好友列表
+export const hasGroupFriendList = (state) => (groupId) => {
+    let groupFriend = state.groupFriendList[groupId] || {};
+    if(JSON.stringify(groupFriend) == '{}') {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 export const filterKey = state => state.filterKey;
 
 // tab类型获取

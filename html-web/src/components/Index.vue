@@ -101,24 +101,7 @@ export default {
             'updateFriendList',
             'updateGroupList',
             'updateGroupSessions'
-        ]),
-        // 更新群成员列表
-        getGroupUserList: function (groupId) {
-            var that  = this;
-            Common.axios({
-                url: 'getGroupFriendList',
-                data: {
-                    groupId: groupId
-                }
-            }).then((res) => {
-                if (res.data) {
-                    let friendList = [];
-                    this.updateGroupFriendList(res.data[groupId]);
-                }
-            }, (error) => {
-
-            });
-        },
+        ])
 
     },
 
@@ -167,7 +150,7 @@ export default {
                 that.updateGroupSessions(item);
             },
             friend_add: function (data) {
-                that.updateApplyList(false);
+                that.updateApplyList({isGroup: false, info: data});
             },
             friend_add_result: function (data) {
                 let result = data.data;
@@ -211,7 +194,7 @@ export default {
                 });
             },
             group_add: function (data) {
-                that.updateApplyList(true);
+                that.updateApplyList({isGroup: true, info: data});
             },
             group_add_result: function (data) {
                 let result = data.data;
@@ -239,9 +222,14 @@ export default {
                         list: tempList,
                         type: 1
                     });
+                    let friendInfo = that.$store.getters.friendInfo(that.user.friendId);
 
                     // 更新新群组成员数据
-                    that.getGroupUserList(result.groupId);
+                    that.updateGroupFriendList({
+                        friendInfo: result.groupUsers,
+                        groupId: result.groupId,
+                        type: 'group_add_result'
+                    });
 
                 } else if (!resule.agree && userId != result.ownerUserId) {
                     that.$notify({
@@ -256,11 +244,11 @@ export default {
                 // 群主同意入群后，成员加入的消息推动给所有群成员
                 let result = data.data;
                 if (!result.code && result.userId) {
-                    // 推给除了管理员和申请人之外的所有人
+                    // 群组中所有在线成员
                     // 更新新群组成员数据
                     // 需要在groupSessions里面提示有人加入群聊，更新在groupSesssions里面，并用isGroupJoinResult做区分
                     let tempItem = {
-                        id: that.currentGroup.groupId,
+                        id: result.groupId,
                         session: {}
                     };
 
@@ -269,7 +257,23 @@ export default {
                         date: new Date().getTime(),
                         isGroupJoinResult: true
                     }
+                    //
+                    let friendInfo = {
+                        "id": result.userId,
+                        "username": result.username,
+                        "nickname": result.nickname,
+                        "headImg": result.headImg,
+                        "sex": result.sex,
+                        "sign": result.sign
+                    }
+                    // 更新群成员列表
+                    that.updateGroupFriendList({
+                        friendInfo: {...friendInfo},
+                        groupId: result.groupId,
+                        type: 'group_join'
+                    });
                     that.updateGroupSessions(tempItem);
+
                 }
             }
 

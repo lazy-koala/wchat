@@ -214,29 +214,93 @@ export const updateGroupSessions = function ({commit, state}, data) {
 }
 
 // 更新群成员列表
-export const updateGroupFriendList = function ({commit, state}, list) {
+export const updateGroupFriendList = function ({commit, state}, data) {
     let groupFriendList = JSON.parse(JSON.stringify(state.groupFriendList));
-    let currentGroupId = state.currentGroup.groupId;
-    if (!groupFriendList[currentGroupId]) {
-        groupFriendList[currentGroupId] = {};
-        for(let item in list) {
-            groupFriendList[currentGroupId][list[item].userId] = list[item];
-        }
-        commit(types.SET_GROUP_USER_LIST, groupFriendList);
+    let type = data.type;
+    let userId =  data.friendInfo.id || '';
+    let list = groupFriendList[data.groupId] || {};
+    if (!userId) {
+        return;
     }
+    switch (data.type) {
+        case 'create-group':
+            list[userId] = data.friendInfo;
+            break;
+        case 'group_join':
+            let flag = false;
+            for(let item in list) {
+                if(list[item].userId == userId) {
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag) {
+                list[userId] = data.friendInfo;
+            }
+            break;
+
+        case 'group_add_result':
+            let groupUsers = data.friendInfo || [];
+            for (let i = 0; i < groupUsers.length; i++) {
+                let item = groupUsers[i];
+                list[item.userId] = {...groupUsers[i]};
+            }
+    }
+
+    commit(types.SET_GROUP_USER_LIST, groupFriendList);
+
+}
+
+// 初始化群成员信息
+export const initGroupFriendList = function ({commit, state}, {list, groupId} = data) {
+    let groupFriendList = JSON.parse(JSON.stringify(state.groupFriendList));
+    if (!groupFriendList[groupId]) {
+        groupFriendList[groupId] = {};
+    }
+    for(let i = 0; i < list.length; i++) {
+        let item = list[i];
+        groupFriendList[groupId][item.userId] = {...item};
+    }
+
+    commit(types.SET_GROUP_USER_LIST, groupFriendList);
 }
 
 // 更新请求消息列表
-export const updateApplyList = function ({commit, state}, isGroup) {
+export const updateApplyList = function ({commit, state}, data) {
+    let isGroup = data.isGroup;
+    let info = data.info;
+    let applyId = isGroup ? info.data.groupApplyId : info.data.friendApplyId;
+    let applyList = isGroup ? JSON.parse(JSON.stringify(state.groupApplyList)) : JSON.parse(JSON.stringify(state.friendApplyList));
+    let indx = applyList.findIndex(function(item, index, arr) {
+            return item.friendApplyId == applyId || item.groupApplyId == applyId;
+        });
+    if (indx != -1) {
+        // 请求列表中已存在，删除
+        applyList.splice(indx, 1);
+    } else {
+        applyList.push({
+            ...info.data,
+            fromUserId: data.fromUserId
+        });
+    }
+    if(isGroup) {
+        commit(types.SET_GROUP_APPLY_LIST, applyList);
+    } else {
+        commit(types.SET_FRIEND_APPLY_LIST, applyList);
+    }
+}
+
+// 初始化好友/群组请求列表
+export const initApplyList = function ({commit, state}, isGroup) {
     let url = '';
     isGroup ? url = 'getGroupApplyList' : url = 'getFriendApplyList';
     Common.axios({
         url: url
      }).then((res) => {
-        if (!res || !res.data) {
-            return;
+        let list = [];
+        if (res && res.data && res.data.list) {
+            list = res.data.list || [];
         }
-        let list = res.data.list || [];
         if (isGroup) {
             commit(types.SET_GROUP_APPLY_LIST, list);
         } else {

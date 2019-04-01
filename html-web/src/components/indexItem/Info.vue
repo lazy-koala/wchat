@@ -74,9 +74,6 @@ export default {
         }, (error) => {
 
         });
-
-        this.updateApplyList(true);
-        this.updateApplyList(false);
     }
 }
 </script>

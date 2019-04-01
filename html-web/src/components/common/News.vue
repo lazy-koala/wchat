@@ -46,6 +46,8 @@
 <script type="text/javascript">
     import {wsRequest} from "../../assets/scripts/ws/apiRequest.js";
     import { mapGetters, mapActions } from 'vuex';
+    import Common from "../../assets/scripts/common.js";
+
     export default {
         name: 'news',
         data () {
@@ -68,7 +70,8 @@
             ...mapActions([
                 'updateApplyList',
                 'updateFriendList',
-                'updateGroupList'
+                'updateGroupList',
+                'initApplyList'
             ]),
             showBox: function () {
                 this.showNewsBox = true;
@@ -98,23 +101,27 @@
                             if (isGroup) {
                                 // 处理成功后更新群组列表
                                 // that.$store.commit('UPDATE_GROUPSESSIONS_LIST', reqInfo);
-                                let tempList = [];
-                                let tempItem = {
-                                    "groupId": reqInfo.groupApplyId || reqInfo._id,
-                                    "groupHeadImg": reqInfo.headImg || reqInfo.groupHeadImg,
-                                    "groupName": reqInfo.groupName,           // * 群组帐号
-                                    "groupNickname": reqInfo.groupNickname || '' ,        // * 群组名称
-                                    "introduction": reqInfo.introduction || '',
-                                    "ownerUserId": reqInfo.ownerUserId,
-                                    "isRead": true
-                                };
-                                tempList.push(tempItem)
-                                that.updateGroupList({
-                                    list: tempList,
-                                    type: 1
-                                });
+                                // let tempList = [];
+                                // let tempItem = {
+                                //     "groupId": reqInfo.groupApplyId || reqInfo._id,
+                                //     "groupHeadImg": reqInfo.headImg || reqInfo.groupHeadImg,
+                                //     "groupName": reqInfo.groupName,           // * 群组帐号
+                                //     "groupNickname": reqInfo.groupNickname || '' ,        // * 群组名称
+                                //     "introduction": reqInfo.introduction || '',
+                                //     "ownerUserId": reqInfo.ownerUserId,
+                                //     "isRead": true
+                                // };
+                                // tempList.push(tempItem)
+                                // that.updateGroupList({
+                                //     list: tempList,
+                                //     type: 1
+                                // });
                                 //更新群请求消息列表
-                                that.updateApplyList(true);
+                                that.updateApplyList({
+                                    isGroup: true,
+                                    info: {data: {groupApplyId: reqInfo.groupApplyId}}
+                                });
+
                                 that.$notify({
                                     title: '提示',
                                     message: "您已同意" + reqInfo.username + "进入" + (reqInfo.groupNickname || reqInfo.groupName),
@@ -142,7 +149,7 @@
                                 });
 
                                 // 更新好友请求列表
-                                that.updateApplyList(false);
+                                that.updateApplyList({isGroup: false, info: {data: {friendApplyId: reqInfo.friendApplyId}}});
                                 that.$notify({
                                     title: '提示',
                                     message: "您已添加" + reqInfo.username + "为好友",
@@ -159,7 +166,7 @@
                                 message: "您已拒绝添加" + data.data.username + "入群",
                                 type: 'warning'
                             });
-                            that.updateApplyList(true);
+                            that.updateApplyList({isGroup: true, info: {data: {groupApplyId: reqInfo.groupApplyId}} });
                             that.showNewsBox = false;
                             return false;
                         }
@@ -169,12 +176,12 @@
                             message: "您已拒绝添加" + data.data.username + "为好友",
                             type: 'warning'
                           });
-                            that.updateApplyList(false);
+                            that.updateApplyList({isGroup: false, info: {data: {friendApplyId: reqInfo.friendApplyId}}});
                             that.showNewsBox = false;
                           return false;
                         }
                         if (data.code != '0000') {
-                          isGroup ? that.updateApplyList(true) : that.updateApplyList(false);
+                          isGroup ? that.updateApplyList({isGroup: true, info: {data: {groupApplyId: reqInfo.groupApplyId}} }) : that.updateApplyList({isGroup: false, info: {data: {friendApplyId: reqInfo.friendApplyId}} });
                           that.$notify({
                             title: '提示',
                             message: data.desc,
@@ -188,6 +195,15 @@
                     }
                   );
             }
+        },
+
+        created() {
+            // 初始化好友请求消息列表
+            this.initApplyList(false);
+
+            // 初始化群请求消息列表
+            this.initApplyList(true);
+
         }
     }
 </script>
