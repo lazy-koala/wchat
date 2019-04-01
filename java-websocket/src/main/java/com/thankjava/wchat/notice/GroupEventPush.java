@@ -26,7 +26,7 @@ public class GroupEventPush {
     }
 
     public void pushGroupAddReply(MsgPushContext<GroupAddReplyPush> msgPushContext) {
-        WSUtil.sendMsg(msgPushContext);
+        WSUtil.sendMsgSync(msgPushContext);
     }
 
     public void pushGroupUserJoin(MsgPushContext<GroupJoinPush> msgPushContext) {

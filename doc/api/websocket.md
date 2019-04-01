@@ -324,7 +324,16 @@
             "groupName": "群帐号",
             "groupHeadImg": "群头像",
             "ownerUserId": "群主userId",
-            "introduction": "群简介"
+            "introduction": "群简介",
+            "groupUsers":[
+                {
+                    "userId": "成员userId",
+                    "nickname": "成员昵称",
+                    "headImg": "成员头像",
+                    "username": "成员帐号",
+                    "sex": "性别"
+                }
+            ]
           },
           "eventType": "group_add_result",
           "fromUserId": "fromUserId",
