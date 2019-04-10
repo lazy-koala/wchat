@@ -38,7 +38,7 @@
 </template>
 <script type="text/javascript">
     import $axios from 'axios';
-    import { mapActions} from 'vuex';
+    import { mapActions, mapGetters} from 'vuex';
     import Common from "../assets/scripts/common.js";
 
     export default {
@@ -53,6 +53,12 @@
                 nicknameText: '',
                 descText: ''
             }
+        },
+        computed: {
+            ...mapGetters([
+                'user',
+                'friendInfo'
+            ])
         },
         methods: {
             ...mapActions([
@@ -109,7 +115,7 @@
             },
             createGroup: function () {
                 let that = this;
-                if (that.groupname != '' && that.nickname != '') {
+                if (that.groupname != '' && that.nickname != '' && that.desc != '') {
                     $axios.post('/api/group/create', {
                         "groupName": (that.groupname).replace(/\s/g, ''),
                         "groupNickname": (that.nickname).replace(/\s/g, ''),
@@ -147,10 +153,17 @@
                             tempList.push(tempItem)
                             that.updateGroupList({
                                 list: tempList,
-                                type: 0
+                                type: 1
                             });
-                            // 更新群组成员
-                            that.getGroupUserList(result.groupId);
+                            // 更新群组成员,将创建人添加入群组好友列表
+                            let friendInfo = that.$store.getters.friendInfo(that.user.id);
+                            that.updateGroupFriendList({
+                              friendInfo: {...friendInfo, ownerUserId: that.user.id },
+                              groupId: result.groupId,
+                              type: 'create-group'
+                            });
+
+                            // that.getGroupUserList(result.groupId);
 
                             // that.$store.commit('UPDATE_GROUP_FRIENDLIST', friendList);
                         } else {
@@ -171,21 +184,21 @@
             },
 
             // 更新群成员列表
-            getGroupUserList: function (groupId) {
-                var that  = this;
-                Common.axios({
-                    url: 'getGroupFriendList',
-                    data: {
-                        groupId: groupId
-                    }
-                }).then((res) => {
-                    if (res.data) {
-                        that.updateGroupFriendList(res.data[groupId]);
-                    }
-                }, (error) => {
+            // getGroupUserList: function (groupId) {
+            //     var that  = this;
+            //     Common.axios({
+            //         url: 'getGroupFriendList',
+            //         data: {
+            //             groupId: groupId
+            //         }
+            //     }).then((res) => {
+            //         if (res.data) {
+            //             that.updateGroupFriendList(res.data[groupId]);
+            //         }
+            //     }, (error) => {
 
-                });
-            },
+            //     });
+            // },
         }
 
     }

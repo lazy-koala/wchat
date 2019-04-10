@@ -45,7 +45,8 @@ export default {
             'friendList',
             'currentFriend',
             'groupList',
-            'currentGroup'
+            'currentGroup',
+            'hasGroupFriendList'
         ])
     },
     filters: {
@@ -60,6 +61,9 @@ export default {
         }
     },
     methods: {
+        ...mapActions([
+            'initGroupFriendList'
+        ]),
         selectSession: function (item, isGroup) {
             if(isGroup) {
                 var group = {
@@ -71,7 +75,7 @@ export default {
                 this.updateCurrentGroup(group);
 
                 // 获取当前所选群组的好友列表
-                this.getGroupUserList(this.currentGroup.groupId, group);
+                this.getGroupUserList(this.currentGroup.groupId);
 
             } else {
                 // 更新当前所选好友
@@ -95,8 +99,12 @@ export default {
             this.updateType(type.index);
         },
 
-        getGroupUserList: function (groupId, group) {
+        getGroupUserList: function (groupId) {
             var that  = this;
+            let hasGroupFriend = that.$store.getters.hasGroupFriendList(groupId);
+            if(hasGroupFriend) {
+                return false;
+            }
             Common.axios({
                 url: 'getGroupFriendList',
                 data: {
@@ -105,7 +113,10 @@ export default {
             }).then((res) => {
                 if (res.data) {
                     let friendList = [];
-                    this.updateGroupFriendList(res.data[groupId]);
+                    that.initGroupFriendList({
+                        list: res.data[groupId],
+                        groupId: groupId
+                    });
                 }
             }, (error) => {
 
@@ -120,7 +131,6 @@ export default {
             'updateGroupList',
             'updateCurrentGroup',
             'updateSessions',
-            'updateGroupFriendList'
         ])
     },
     created() {
@@ -172,6 +182,10 @@ export default {
                         id: group.groupId,
                         name: group.groupNickname || group.groupName
                     });
+
+                    // 获取当前所选群组的好友列表
+                    that.getGroupUserList(group.groupId);
+
                 }
             }
         });

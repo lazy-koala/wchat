@@ -28,7 +28,7 @@ export default {
         onKeyup (e) {
             let that = this;
             let tabIndex = this.$store.state.tabType;
-            if (e.keyCode === 13 && that.content.length) {
+            if (e.keyCode === 13 && that.content.length && that.content.length > 1) {
                 if (tabIndex == 1) {
                     let groupId = that.currentGroup.groupId;
                     if (!groupId) {

@@ -66,22 +66,22 @@ const state = {
 
     // 群会话列表
     groupSessions: {
-        'groupIdA': [
-            {
-                content: 'testtesttesttesttesttesttesttest',
-                date: 1548830741228,
-                self: false,
-                userId: '111',
-                code: ''
-            },
-            {
-                content: 'testtesttesttesttesttesttesttest',
-                date: 1548830745228,
-                self: true,
-                userId: '222',
-                code: ''
-            }
-        ]
+        // 'groupIdA': [
+        //     {
+        //         content: 'testtesttesttesttesttesttesttest',
+        //         date: 1548830741228,
+        //         self: false,
+        //         userId: '111',
+        //         code: ''
+        //     },
+        //     {
+        //         content: 'testtesttesttesttesttesttesttest',
+        //         date: 1548830745228,
+        //         self: true,
+        //         userId: '222',
+        //         code: ''
+        //     }
+        // ]
     },
 
     // 当前选中的会话群组
