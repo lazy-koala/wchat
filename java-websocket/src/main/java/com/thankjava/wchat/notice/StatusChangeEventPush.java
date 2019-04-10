@@ -38,13 +38,16 @@ public class StatusChangeEventPush {
     private void doPush(MsgPushContext msgPushContext) {
 
         FriendRelation query = new FriendRelation();
+
         query.setUserId(msgPushContext.getFromUserId());
 
         List<FriendRelation> friendRelations = friendRelationMapper.selectByCondition(query);
 
         if (friendRelations == null || friendRelations.isEmpty()) return;
+
         for (FriendRelation friendRelation : friendRelations) {
-            WSUtil.sendMsgSync(new MsgPushContext(
+            
+            WSUtil.sendMsgSync(new MsgPushContext<>(
                     msgPushContext.getEventType(),
                     msgPushContext.getFromUserId(),
                     friendRelation.getFriendUserId(),
