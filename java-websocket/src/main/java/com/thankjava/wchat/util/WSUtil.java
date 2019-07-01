@@ -31,7 +31,7 @@ public class WSUtil {
      *
      * @param msgPushContext
      */
-    public static void sendMsgSync(MsgPushContext msgPushContext) {
+    public static void sendMsgAsync(MsgPushContext msgPushContext) {
 
         threadPool.execute(() -> {
            ws.sendMsg(msgPushContext.getToUserId().concat(";/notice/event"), msgPushContext.toJsonString());

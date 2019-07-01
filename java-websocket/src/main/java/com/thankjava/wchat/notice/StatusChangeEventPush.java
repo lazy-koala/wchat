@@ -47,7 +47,7 @@ public class StatusChangeEventPush {
 
         for (FriendRelation friendRelation : friendRelations) {
             
-            WSUtil.sendMsgSync(new MsgPushContext<>(
+            WSUtil.sendMsgAsync(new MsgPushContext<>(
                     msgPushContext.getEventType(),
                     msgPushContext.getFromUserId(),
                     friendRelation.getFriendUserId(),

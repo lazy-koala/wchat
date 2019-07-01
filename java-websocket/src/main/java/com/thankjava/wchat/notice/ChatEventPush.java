@@ -47,7 +47,7 @@ public class ChatEventPush {
             // 推送群组内所有成员消息
             for (GroupRelation groupRelation : groupRelations) {
                 if (!groupRelation.getUserId().equals(msgPushContext.getFromUserId())) {
-                    WSUtil.sendMsgSync(new MsgPushContext<>(
+                    WSUtil.sendMsgAsync(new MsgPushContext<>(
                             msgPushContext.getEventType(),
                             msgPushContext.getFromUserId(),
                             groupRelation.getUserId(),

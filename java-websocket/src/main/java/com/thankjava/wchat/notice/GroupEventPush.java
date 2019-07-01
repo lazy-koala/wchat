@@ -26,7 +26,7 @@ public class GroupEventPush {
     }
 
     public void pushGroupAddReply(MsgPushContext<GroupAddReplyPush> msgPushContext) {
-        WSUtil.sendMsgSync(msgPushContext);
+        WSUtil.sendMsgAsync(msgPushContext);
     }
 
     public void pushGroupUserJoin(MsgPushContext<GroupJoinPush> msgPushContext) {
@@ -36,7 +36,7 @@ public class GroupEventPush {
         if (groupRelations != null & !groupRelations.isEmpty()) {
             for (GroupRelation relation : groupRelations) {
                 if (relation.getUserId().equals(msgPushContext.getData().getUserId())) continue;
-                WSUtil.sendMsgSync(new MsgPushContext<>(
+                WSUtil.sendMsgAsync(new MsgPushContext<>(
                         msgPushContext.getEventType(),
                         msgPushContext.getFromUserId(),
                         relation.getUserId(),
