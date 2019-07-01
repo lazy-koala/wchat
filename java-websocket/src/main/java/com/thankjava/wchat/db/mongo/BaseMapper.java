@@ -1,8 +1,8 @@
 package com.thankjava.wchat.db.mongo;
 
 
+import com.thankjava.toolkit3d.core.db.BasicDBManagerBuilder;
 import com.thankjava.toolkit3d.core.db.mongodb.MongoManager;
-import com.thankjava.toolkit3d.core.db.mongodb.datasource.MongoManagerImpl;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  **/
 public interface BaseMapper<T> {
 
-    MongoManager mongo = MongoManagerImpl.getSingleton("./config/mongodb.properties");
+    MongoManager mongo = BasicDBManagerBuilder.buildMongoManager("./config/mongodb.properties");
 
     T selectById(String id);
 
