@@ -12,24 +12,24 @@ import java.lang.reflect.InvocationTargetException;
  **/
 public class Message {
 
-    private ConVerifyResult conVerifyResult;
+    private VerifiedConnection verifiedConnection;
     private WebSocket conn;
     private String message;
 
-    public Message(ConVerifyResult conVerifyResult, WebSocket conn, String message) {
+    public Message(VerifiedConnection verifiedConnection, WebSocket conn, String message) {
 
-        this.conVerifyResult = conVerifyResult;
+        this.verifiedConnection = verifiedConnection;
         this.conn = conn;
         this.message = message;
 
     }
 
     public String getFromSessionId() {
-        return conVerifyResult.getSessionId();
+        return verifiedConnection.getSessionId();
     }
 
     public String getFromUserId() {
-        return conVerifyResult.getUserId();
+        return verifiedConnection.getUserId();
     }
 
     public String getMessage() {
@@ -41,13 +41,13 @@ public class Message {
     }
 
     public User getBindData() {
-        return (User) conVerifyResult.getBindData();
+        return (User) verifiedConnection.getBindData();
     }
 
     /**
      * 执行controller逻辑
      */
     public void doProcess(Object... args) throws InvocationTargetException, IllegalAccessException {
-        conVerifyResult.getProcess().invoke(conVerifyResult.getController(), args);
+        verifiedConnection.getProcess().invoke(verifiedConnection.getController(), args);
     }
 }

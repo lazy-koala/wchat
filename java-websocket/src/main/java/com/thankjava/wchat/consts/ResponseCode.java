@@ -10,6 +10,8 @@ public enum ResponseCode {
     SUCCESS("0000", "处理完成"),
     FAILED("9998", "处理失败"),
     BAD_REQUEST_PARAMETER("9997", "请求参数错误"),
+    THIS_PATH_CAN_NOT_ACCEPT_REQUEST("9997", "该服务地址不接受任何请求"),
+
 
     TARGET_OFFLINE("8999", "目标已离线"),
 

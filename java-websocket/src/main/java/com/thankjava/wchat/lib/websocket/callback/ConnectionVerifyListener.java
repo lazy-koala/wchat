@@ -1,6 +1,6 @@
 package com.thankjava.wchat.lib.websocket.callback;
 
-import com.thankjava.wchat.lib.websocket.entity.ConVerifyResult;
+import com.thankjava.wchat.lib.websocket.entity.VerifiedConnection;
 import org.java_websocket.handshake.ClientHandshake;
 
 /**
@@ -15,6 +15,6 @@ public interface ConnectionVerifyListener {
      * @param handshake
      * @return
      */
-    ConVerifyResult doProcess(ClientHandshake handshake);
+    VerifiedConnection doProcess(ClientHandshake handshake);
 
 }

@@ -3,7 +3,7 @@ package com.thankjava.wchat.lib.websocket;
 import com.thankjava.toolkit.core.reflect.ReflectUtil;
 import com.thankjava.wchat.lib.websocket.callback.OnConnCloseListener;
 import com.thankjava.wchat.lib.websocket.callback.OnMessageListener;
-import com.thankjava.wchat.lib.websocket.entity.ConVerifyResult;
+import com.thankjava.wchat.lib.websocket.entity.VerifiedConnection;
 import com.thankjava.wchat.lib.websocket.callback.ConnectionVerifyListener;
 import com.thankjava.wchat.lib.websocket.entity.Message;
 import com.thankjava.wchat.util.WSUtil;
@@ -34,7 +34,8 @@ public class BasicWebSocket extends WebSocketServer {
 
     public BasicWebSocket(int port, ConnectionVerifyListener connectionVerifyListener, OnMessageListener onMessageListener, OnConnCloseListener onConnCloseListener) {
         super(new InetSocketAddress(port));
-        if (connectionVerifyListener == null || onMessageListener == null || onConnCloseListener == null) throw new RuntimeException();
+        if (connectionVerifyListener == null || onMessageListener == null || onConnCloseListener == null)
+            throw new RuntimeException();
         this.connectionVerifyListener = connectionVerifyListener;
         this.onMessageListener = onMessageListener;
         this.onConnCloseListener = onConnCloseListener;
@@ -43,16 +44,16 @@ public class BasicWebSocket extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        ConVerifyResult conVerifyResult = connectionVerifyListener.doProcess(handshake);
-        if (conVerifyResult == null) throw new RuntimeException("ConVerifyResult can not be null");
+        VerifiedConnection verifiedConnection = connectionVerifyListener.doProcess(handshake);
+        if (verifiedConnection == null) throw new RuntimeException("ConVerifyResult can not be null");
         if (conn == null) {
             logger.error("ws connected but conn is null");
             return;
         }
-        if (conVerifyResult.isAllowConnect()) {
-            Session.putConn(conVerifyResult.getSessionId(), conn);
-            conn.setAttachment(conVerifyResult);
-            logger.info("ws connected host = " + conn.getRemoteSocketAddress().getHostString() + " sessionId = " + conVerifyResult.getSessionId());
+        if (verifiedConnection.isAllowConnect()) {
+            Session.putConn(verifiedConnection.getSessionId(), conn);
+            conn.setAttachment(verifiedConnection);
+            logger.info("ws connected host = " + conn.getRemoteSocketAddress().getHostString() + " sessionId = " + verifiedConnection.getSessionId());
         } else {
             logger.info("ws refused path = " + conn.getResourceDescriptor() + " host = " + conn.getRemoteSocketAddress().getHostString());
             conn.close(1008, "Unauthorized request");
@@ -62,18 +63,22 @@ public class BasicWebSocket extends WebSocketServer {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         if (conn == null) return;
-        ConVerifyResult conVerifyResult = conn.<ConVerifyResult>getAttachment();
-        if (conVerifyResult == null) return;
-        logger.debug("conn closing sessionId = " + conVerifyResult.getSessionId());
-        Session.delConn(conVerifyResult.getSessionId());
-        onConnCloseListener.doProcess(conVerifyResult);
+        VerifiedConnection verifiedConnection = conn.<VerifiedConnection>getAttachment();
+        if (verifiedConnection == null) return;
+        logger.debug("conn closing sessionId = " + verifiedConnection.getSessionId());
+        Session.delConn(verifiedConnection.getSessionId());
+        onConnCloseListener.doProcess(verifiedConnection);
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        ConVerifyResult conVerifyResult = conn.getAttachment();
-        logger.debug("onMessage sessionId = " + conVerifyResult.getSessionId() + " message = " + message);
-        onMessageListener.doProcess(new Message(conVerifyResult, conn, message));
+        VerifiedConnection verifiedConnection = conn.getAttachment();
+        if (verifiedConnection == null) {
+            conn.close(1008,"Verify Failed");
+            return;
+        }
+        logger.debug("onMessage sessionId = " + verifiedConnection.getSessionId() + " message = " + message);
+        onMessageListener.doProcess(new Message(verifiedConnection, conn, message));
     }
 
     @Override
@@ -94,7 +99,7 @@ public class BasicWebSocket extends WebSocketServer {
             constructor.setAccessible(true);
             ReflectUtil.setFiledVal(WSUtil.class, "ws", constructor.newInstance());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("websocket onstart error", e);
         }
     }
 }

@@ -26,11 +26,11 @@ public class OnMessageCallBack implements OnMessageListener {
             try {
                 data = FastJson.toJSONObject(message.getMessage());
             } catch (Exception e) {
-                logger.error("ws 请求参数异常 sessionId = " + message.getFromSessionId() + " | msg = " + message.getMessage(), e);
+                logger.error("ws 请求参数异常 sessionId = " + message.getFromSessionId() + " | msg = " + message.getMessage());
                 message.getConn().send(new ResponseContext(ResponseCode.BAD_REQUEST_PARAMETER).toJsonString());
                 return;
             }
-            logger.info("get message: " + message.getMessage());
+            logger.debug("get message: " + message.getMessage());
             message.doProcess(new RequestContext(
                             message.getFromUserId(),
                             message.getConn(),

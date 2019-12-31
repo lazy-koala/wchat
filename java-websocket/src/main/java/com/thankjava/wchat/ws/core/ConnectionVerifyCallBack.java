@@ -11,7 +11,7 @@ import com.thankjava.wchat.controller.Friend;
 import com.thankjava.wchat.controller.Group;
 import com.thankjava.wchat.controller.Notice;
 import com.thankjava.wchat.db.entity.User;
-import com.thankjava.wchat.lib.websocket.entity.ConVerifyResult;
+import com.thankjava.wchat.lib.websocket.entity.VerifiedConnection;
 import com.thankjava.wchat.lib.websocket.callback.ConnectionVerifyListener;
 import com.thankjava.wchat.notice.StatusChangeEventPush;
 import com.thankjava.wchat.util.RedisUtil;
@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@SuppressWarnings("unchecked")
 public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
 
     private static final Map<String, Method> processes = new HashMap<>();
@@ -38,7 +39,7 @@ public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
 
     static {
 
-        Set<Class> controllers = new HashSet<>();
+        Set<Class<?>> controllers = new HashSet<>();
 
         // 初始化controller
         controllers.add(Chat.class);
@@ -55,12 +56,12 @@ public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
     /**
      * 扫描controller 用于将执行方法绑定到请求上下文中
      *
-     * @param controllerClasses
+     * @param controllerClasses controller
      */
-    private static void scanController(Set<Class> controllerClasses) {
+    private static void scanController(Set<Class<?>> controllerClasses) {
         StringBuilder stringBuilder;
-        for (Class clazz : controllerClasses) {
-            WSController ws = (WSController) clazz.getAnnotation(WSController.class);
+        for (Class<?> clazz : controllerClasses) {
+            WSController ws = clazz.getAnnotation(WSController.class);
             if (ws == null) continue;
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
@@ -71,9 +72,7 @@ public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
                 processes.put(stringBuilder.toString(), method);
                 try {
                     controllers.put(stringBuilder.toString(), clazz.newInstance());
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
+                } catch (InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
@@ -83,41 +82,47 @@ public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
     /**
      * 进行连接校验和连接数据信息绑定
      */
-    @Override
-    public ConVerifyResult doProcess(ClientHandshake handshake) {
+    public VerifiedConnection<?> doProcess(ClientHandshake handshake) {
 
         String path = handshake.getResourceDescriptor();
         Method process = processes.get(path);
-
+        VerifiedConnection<?> verifiedConnection = new VerifiedConnection();
         if (process == null) {
             logger.debug("无效的ws请求地址 path = " + path);
-            return new ConVerifyResult();
+            return verifiedConnection;
         }
 
         // 没有cookie信息
         if (!handshake.hasFieldValue("Cookie")) {
             logger.debug("缺失Cookie认证信息 path = " + path);
-            return new ConVerifyResult();
+            return verifiedConnection;
         }
 
         String token = Utils.getValueForCookieStr(handshake.getFieldValue("Cookie"), CookieName.TOKEN_KEY);
         String uid = Utils.getValueForCookieStr(handshake.getFieldValue("Cookie"), CookieName.UID_KEY);
 
         if (token == null || uid == null) {
-            logger.debug("缺失CookieName.TOKEN_KEY/CookieName.UID_KEY认证信息 path = " + path);
-            return new ConVerifyResult();
+            logger.debug("缺失 uid/token 认证信息 path = " + path);
+            return verifiedConnection;
         }
         String authJson = RedisUtil.getRedisManager().get(RedisKeyManager.TOKEN_KEY(token));
-        if (authJson == null) return new ConVerifyResult();
+        if (authJson == null) {
+            logger.debug("无效的token = {} path = " + path, token);
+            return verifiedConnection;
+        }
 
         User user = FastJson.toObject(authJson, User.class);
-        if (!user.getId().equals(uid)) return new ConVerifyResult();
+        if (!user.getId().equals(uid)) {
+            logger.debug("认证信息失败 uid = {} path = " + path, uid);
+            return verifiedConnection;
+        }
 
         if (path.equals("/notice/event")) {
             if (WSUtil.isOnline(user.getId())) {
 
                 // 当前已经在线则向目标推送强制退出
-                statusChangeEventPush.pushForcedLogout(new MsgPushContext(EventType.forced_logout, "system", user.getId()));
+                MsgPushContext<?> msgPushContext = new MsgPushContext(EventType.forced_logout, "system", user.getId());
+                statusChangeEventPush.pushForcedLogout(msgPushContext);
             } else {
 
                 // 向好友推送上线通知
@@ -133,8 +138,8 @@ public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
         }
 
         RedisUtil.getRedisManager().sadd(RedisKeyManager.ONLINE_SET_KEY(), uid);
-
-        return new ConVerifyResult(uid, path, user, process, controllers.get(path));
+        verifiedConnection = new VerifiedConnection(uid, path, user, process, controllers.get(path));
+        return verifiedConnection;
     }
 
 }

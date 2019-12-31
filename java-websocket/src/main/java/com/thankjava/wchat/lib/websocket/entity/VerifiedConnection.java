@@ -7,13 +7,13 @@ import java.lang.reflect.Method;
  * 2018/8/6
  * @Description:验证连接动作的返回处理结果
  **/
-public class ConVerifyResult<T> {
+public class VerifiedConnection<T> {
 
-    public ConVerifyResult() {
+    public VerifiedConnection() {
 
     }
 
-    public ConVerifyResult(String userId, String path, T bindData, Method process, Object controller) {
+    public VerifiedConnection(String userId, String path, T bindData, Method process, Object controller) {
         this.allowConnect = true;
         this.userId = userId;
         this.path = path;

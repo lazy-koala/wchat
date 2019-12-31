@@ -7,7 +7,7 @@ import com.thankjava.wchat.bean.notice.notice.OfflinePush;
 import com.thankjava.wchat.consts.EventType;
 import com.thankjava.wchat.consts.RedisKeyManager;
 import com.thankjava.wchat.lib.websocket.callback.OnConnCloseListener;
-import com.thankjava.wchat.lib.websocket.entity.ConVerifyResult;
+import com.thankjava.wchat.lib.websocket.entity.VerifiedConnection;
 import com.thankjava.wchat.notice.StatusChangeEventPush;
 import com.thankjava.wchat.util.RedisUtil;
 import org.slf4j.Logger;
@@ -26,28 +26,28 @@ public class OnConnCloseCallBack implements OnConnCloseListener {
     final int delayTime = 3;
 
     @Override
-    public void doProcess(ConVerifyResult conVerifyResult) {
-        if ("/notice/event".equals(conVerifyResult.getPath())) {
+    public void doProcess(VerifiedConnection verifiedConnection) {
+        logger.debug("connection closed: sessionId = {} , path = {}", verifiedConnection.getSessionId(), verifiedConnection.getPath());
+        if ("/notice/event".equals(verifiedConnection.getPath())) {
 
             // 如果当前在线则执行下线 并准备推送离线信息
-            if (RedisUtil.getRedisManager().sismember(RedisKeyManager.ONLINE_SET_KEY(), conVerifyResult.getUserId())) {
+            if (RedisUtil.getRedisManager().sismember(RedisKeyManager.ONLINE_SET_KEY(), verifiedConnection.getUserId())) {
 
-                RedisUtil.getRedisManager().srem(RedisKeyManager.ONLINE_SET_KEY(), conVerifyResult.getUserId());
+                RedisUtil.getRedisManager().srem(RedisKeyManager.ONLINE_SET_KEY(), verifiedConnection.getUserId());
 
                 threadTask.addTaskRunOnce(delayTime, () -> {
 
                     // 延迟指定时间后 如果确实离线才推送
-                    if (!RedisUtil.getRedisManager().sismember(RedisKeyManager.ONLINE_SET_KEY(), conVerifyResult.getUserId())) {
+                    if (!RedisUtil.getRedisManager().sismember(RedisKeyManager.ONLINE_SET_KEY(), verifiedConnection.getUserId())) {
 
-                        logger.info("push offline userId = " + conVerifyResult.getUserId());
+                        logger.info("push offline userId = " + verifiedConnection.getUserId());
 
                         MsgPushContext<OfflinePush> msgPushContext = new MsgPushContext<>(
                                 EventType.friend_status_change,
-                                conVerifyResult.getUserId(),
+                                verifiedConnection.getUserId(),
                                 null,
-                                BeanCopierUtil.copy(conVerifyResult.getBindData(), OfflinePush.class)
+                                BeanCopierUtil.copy(verifiedConnection.getBindData(), OfflinePush.class)
                         );
-
                         statusChangeEventPush.pushOffline(msgPushContext);
                     }
 

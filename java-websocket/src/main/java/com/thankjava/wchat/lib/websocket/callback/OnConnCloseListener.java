@@ -1,8 +1,8 @@
 package com.thankjava.wchat.lib.websocket.callback;
 
-import com.thankjava.wchat.lib.websocket.entity.ConVerifyResult;
+import com.thankjava.wchat.lib.websocket.entity.VerifiedConnection;
 
 public interface OnConnCloseListener {
 
-    void doProcess(ConVerifyResult conVerifyResult);
+    void doProcess(VerifiedConnection verifiedConnection);
 }
