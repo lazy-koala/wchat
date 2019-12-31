@@ -95,12 +95,18 @@ public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
         }
 
         // 没有cookie信息
-        if (!handshake.hasFieldValue("Cookie")) return new ConVerifyResult();
+        if (!handshake.hasFieldValue("Cookie")) {
+            logger.debug("缺失Cookie认证信息 path = " + path);
+            return new ConVerifyResult();
+        }
 
         String token = Utils.getValueForCookieStr(handshake.getFieldValue("Cookie"), CookieName.TOKEN_KEY);
         String uid = Utils.getValueForCookieStr(handshake.getFieldValue("Cookie"), CookieName.UID_KEY);
 
-        if (token == null || uid == null) return new ConVerifyResult();
+        if (token == null || uid == null) {
+            logger.debug("缺失CookieName.TOKEN_KEY/CookieName.UID_KEY认证信息 path = " + path);
+            return new ConVerifyResult();
+        }
         String authJson = RedisUtil.getRedisManager().get(RedisKeyManager.TOKEN_KEY(token));
         if (authJson == null) return new ConVerifyResult();
 

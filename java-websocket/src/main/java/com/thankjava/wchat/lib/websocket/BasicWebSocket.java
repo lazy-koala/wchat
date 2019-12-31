@@ -54,7 +54,7 @@ public class BasicWebSocket extends WebSocketServer {
             conn.setAttachment(conVerifyResult);
             logger.info("ws connected host = " + conn.getRemoteSocketAddress().getHostString() + " sessionId = " + conVerifyResult.getSessionId());
         } else {
-            logger.info("ws refuse path = " + conn.getResourceDescriptor() + " host = " + conn.getRemoteSocketAddress().getHostString());
+            logger.info("ws refused path = " + conn.getResourceDescriptor() + " host = " + conn.getRemoteSocketAddress().getHostString());
             conn.close(1008, "Unauthorized request");
         }
     }

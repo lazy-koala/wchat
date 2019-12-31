@@ -110,3 +110,4 @@ target
 .DS_Store
 .project
 *.iml
+java-websocket/config

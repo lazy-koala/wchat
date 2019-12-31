@@ -18,13 +18,13 @@ public class Utils {
      * @return
      */
     public static String getValueForCookieStr(String cookieStr, CookieName cookieName) {
-        logger.info("cookieStr = " + cookieStr + " cookieName = " + cookieName.code);
+        logger.debug("cookieStr = [" + cookieStr + "] get cookieName = " + cookieName.code);
         String[] cookies = cookieStr.split("; ");
         Map<String, String> cookieKV = new HashMap<>();
         String[] tmp;
         for (String cookie : cookies) {
             tmp = cookie.trim().split("=");
-            if (tmp == null || tmp.length != 2) {
+            if (tmp == null || tmp.length == 0) {
                 return null;
             }
             cookieKV.put(tmp[0].trim(), tmp[1].trim());
