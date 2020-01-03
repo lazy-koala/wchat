@@ -18,7 +18,9 @@ final class WSImpl extends Session implements WS {
     @Override
     public ResponseCode sendMsg(String sessionId, String msgText) {
         WebSocket conn = Session.getConn(sessionId);
-        if (conn == null) return ResponseCode.TARGET_OFFLINE;
+        if (conn == null) {
+            return ResponseCode.TARGET_OFFLINE;
+        }
         conn.send(msgText);
         return ResponseCode.SUCCESS;
     }
@@ -26,7 +28,9 @@ final class WSImpl extends Session implements WS {
     @Override
     public void closeConn(String sessionId) {
         WebSocket conn = Session.getConn(sessionId);
-        if (conn == null) return;
+        if (conn == null) {
+            return;
+        }
         conn.close();
     }
 

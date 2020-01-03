@@ -43,7 +43,9 @@ public class StatusChangeEventPush {
 
         List<FriendRelation> friendRelations = friendRelationMapper.selectByCondition(query);
 
-        if (friendRelations == null || friendRelations.isEmpty()) return;
+        if (friendRelations == null || friendRelations.isEmpty()) {
+            return;
+        }
 
         for (FriendRelation friendRelation : friendRelations) {
             

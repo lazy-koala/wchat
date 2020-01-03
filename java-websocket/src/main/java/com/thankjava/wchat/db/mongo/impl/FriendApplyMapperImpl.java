@@ -12,23 +12,23 @@ public class FriendApplyMapperImpl implements FriendApplyMapper {
 
     @Override
     public FriendApply selectById(String id) {
-        return mongo.findByObjectId(tableName, id, FriendApply.class);
+        return MONGO_MANAGER.findByObjectId(tableName, id, FriendApply.class);
     }
 
     @Override
     public String insert(FriendApply friendApply) {
         friendApply.setCreateTime(System.currentTimeMillis());
-        return mongo.insertOne(tableName, friendApply);
+        return MONGO_MANAGER.insertOne(tableName, friendApply);
     }
 
     @Override
     public List<FriendApply> selectByCondition(FriendApply friendApply) {
-        return mongo.findMany(tableName, friendApply, FriendApply.class);
+        return MONGO_MANAGER.findMany(tableName, friendApply, FriendApply.class);
     }
 
     @Override
     public boolean updateById(FriendApply friendApply) {
-        return mongo.updateOneByObjectId(tableName, friendApply, friendApply.getId());
+        return MONGO_MANAGER.updateOneByObjectId(tableName, friendApply, friendApply.getId());
     }
 
     @Override

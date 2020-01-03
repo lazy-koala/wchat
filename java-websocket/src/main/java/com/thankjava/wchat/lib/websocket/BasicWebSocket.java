@@ -34,8 +34,9 @@ public class BasicWebSocket extends WebSocketServer {
 
     public BasicWebSocket(int port, ConnectionVerifyListener connectionVerifyListener, OnMessageListener onMessageListener, OnConnCloseListener onConnCloseListener) {
         super(new InetSocketAddress(port));
-        if (connectionVerifyListener == null || onMessageListener == null || onConnCloseListener == null)
+        if (connectionVerifyListener == null || onMessageListener == null || onConnCloseListener == null) {
             throw new RuntimeException();
+        }
         this.connectionVerifyListener = connectionVerifyListener;
         this.onMessageListener = onMessageListener;
         this.onConnCloseListener = onConnCloseListener;
@@ -45,7 +46,9 @@ public class BasicWebSocket extends WebSocketServer {
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         VerifiedConnection verifiedConnection = connectionVerifyListener.doProcess(handshake);
-        if (verifiedConnection == null) throw new RuntimeException("ConVerifyResult can not be null");
+        if (verifiedConnection == null) {
+            throw new RuntimeException("ConVerifyResult can not be null");
+        }
         if (conn == null) {
             logger.error("ws connected but conn is null");
             return;
@@ -62,9 +65,13 @@ public class BasicWebSocket extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        if (conn == null) return;
+        if (conn == null) {
+            return;
+        }
         VerifiedConnection verifiedConnection = conn.<VerifiedConnection>getAttachment();
-        if (verifiedConnection == null) return;
+        if (verifiedConnection == null) {
+            return;
+        }
         logger.debug("conn closing sessionId = " + verifiedConnection.getSessionId());
         Session.delConn(verifiedConnection.getSessionId());
         onConnCloseListener.doProcess(verifiedConnection);

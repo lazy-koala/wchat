@@ -35,7 +35,9 @@ public class GroupEventPush {
         List<GroupRelation> groupRelations = groupRelationMapper.selectByCondition(groupRelation);
         if (groupRelations != null & !groupRelations.isEmpty()) {
             for (GroupRelation relation : groupRelations) {
-                if (relation.getUserId().equals(msgPushContext.getData().getUserId())) continue;
+                if (relation.getUserId().equals(msgPushContext.getData().getUserId())) {
+                    continue;
+                }
                 WSUtil.sendMsgAsync(new MsgPushContext<>(
                         msgPushContext.getEventType(),
                         msgPushContext.getFromUserId(),

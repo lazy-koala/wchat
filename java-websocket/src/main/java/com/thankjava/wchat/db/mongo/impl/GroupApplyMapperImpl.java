@@ -12,22 +12,22 @@ public class GroupApplyMapperImpl implements GroupApplyMapper {
 
     @Override
     public GroupApply selectById(String id) {
-        return mongo.findByObjectId(tableName, id, GroupApply.class);
+        return MONGO_MANAGER.findByObjectId(tableName, id, GroupApply.class);
     }
 
     @Override
     public String insert(GroupApply groupApply) {
-        return mongo.insertOne(tableName, groupApply);
+        return MONGO_MANAGER.insertOne(tableName, groupApply);
     }
 
     @Override
     public List<GroupApply> selectByCondition(GroupApply groupApply) {
-        return mongo.findMany(tableName, groupApply, GroupApply.class);
+        return MONGO_MANAGER.findMany(tableName, groupApply, GroupApply.class);
     }
 
     @Override
     public boolean updateById(GroupApply groupApply) {
-        return mongo.updateOneByObjectId(tableName, groupApply, groupApply.getId());
+        return MONGO_MANAGER.updateOneByObjectId(tableName, groupApply, groupApply.getId());
     }
 
     @Override

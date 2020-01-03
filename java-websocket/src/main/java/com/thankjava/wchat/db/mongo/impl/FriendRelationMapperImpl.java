@@ -23,12 +23,12 @@ public class FriendRelationMapperImpl implements FriendRelationMapper {
     @Override
     public String insert(FriendRelation friendRelation) {
         friendRelation.setCreateTime(System.currentTimeMillis());
-        return mongo.insertOne(tableName, friendRelation);
+        return MONGO_MANAGER.insertOne(tableName, friendRelation);
     }
 
     @Override
     public List<FriendRelation> selectByCondition(FriendRelation friendRelation) {
-        return mongo.findMany(tableName, friendRelation, FriendRelation.class);
+        return MONGO_MANAGER.findMany(tableName, friendRelation, FriendRelation.class);
     }
 
     @Override
@@ -38,6 +38,6 @@ public class FriendRelationMapperImpl implements FriendRelationMapper {
 
     @Override
     public void deleteById(String id) {
-        mongo.deleteOneByObjectId(tableName, id);
+        MONGO_MANAGER.deleteOneByObjectId(tableName, id);
     }
 }

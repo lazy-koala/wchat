@@ -13,18 +13,18 @@ public class GroupRelationMapperImpl implements GroupRelationMapper {
 
     @Override
     public GroupRelation selectById(String id) {
-        return mongo.findByObjectId(tableName, id, GroupRelation.class);
+        return MONGO_MANAGER.findByObjectId(tableName, id, GroupRelation.class);
     }
 
     @Override
     public String insert(GroupRelation groupRelation) {
         groupRelation.setCreateTime(System.currentTimeMillis());
-        return mongo.insertOne(tableName, groupRelation);
+        return MONGO_MANAGER.insertOne(tableName, groupRelation);
     }
 
     @Override
     public List<GroupRelation> selectByCondition(GroupRelation groupRelation) {
-        return mongo.findMany(tableName, groupRelation, GroupRelation.class);
+        return MONGO_MANAGER.findMany(tableName, groupRelation, GroupRelation.class);
     }
 
     @Override
@@ -37,8 +37,9 @@ public class GroupRelationMapperImpl implements GroupRelationMapper {
 
     }
 
+    @Override
     public List<GroupRelation> selectByGroupId(String groupId) {
-        return mongo.findMany(tableName, new Document("groupId", groupId), GroupRelation.class);
+        return MONGO_MANAGER.findMany(tableName, new Document("groupId", groupId), GroupRelation.class);
 
     }
 }

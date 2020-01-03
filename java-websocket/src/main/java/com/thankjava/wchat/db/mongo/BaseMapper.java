@@ -13,7 +13,7 @@ import java.util.List;
  **/
 public interface BaseMapper<T> {
 
-    MongoManager mongo = BasicDBManagerBuilder.buildMongoManager("./config/mongodb.properties");
+    MongoManager MONGO_MANAGER = BasicDBManagerBuilder.buildMongoManager("./config/mongodb.properties");
 
     T selectById(String id);
 

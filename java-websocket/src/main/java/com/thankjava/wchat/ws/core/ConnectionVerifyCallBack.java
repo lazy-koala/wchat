@@ -62,12 +62,16 @@ public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
         StringBuilder stringBuilder;
         for (Class<?> clazz : controllerClasses) {
             WSController ws = clazz.getAnnotation(WSController.class);
-            if (ws == null) continue;
+            if (ws == null) {
+                continue;
+            }
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
                 stringBuilder = new StringBuilder();
                 WSProcess wsProcess = method.getAnnotation(WSProcess.class);
-                if (wsProcess == null) continue;
+                if (wsProcess == null) {
+                    continue;
+                }
                 stringBuilder.append("/").append(ws.path()).append("/").append(wsProcess.path());
                 processes.put(stringBuilder.toString(), method);
                 try {
@@ -82,6 +86,7 @@ public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
     /**
      * 进行连接校验和连接数据信息绑定
      */
+    @Override
     public VerifiedConnection<?> doProcess(ClientHandshake handshake) {
 
         String path = handshake.getResourceDescriptor();
@@ -117,7 +122,7 @@ public class ConnectionVerifyCallBack implements ConnectionVerifyListener {
             return verifiedConnection;
         }
 
-        if (path.equals("/notice/event")) {
+        if ("/notice/event".equals(path)) {
             if (WSUtil.isOnline(user.getId())) {
 
                 // 当前已经在线则向目标推送强制退出

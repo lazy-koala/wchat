@@ -13,7 +13,7 @@ public class GroupInfoMapperImpl implements GroupInfoMapper {
 
     @Override
     public GroupInfo selectById(String id) {
-        return mongo.findByObjectId(tableName, id, GroupInfo.class);
+        return MONGO_MANAGER.findByObjectId(tableName, id, GroupInfo.class);
     }
 
     @Override
