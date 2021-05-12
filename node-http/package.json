@@ -15,7 +15,7 @@
     "koa-router": "^7.4.0",
     "md5": "^2.2.1",
     "mongoose": "5.7.5",
-    "nodemailer": "^4.6.8",
+    "nodemailer": "^6.4.16",
     "redis": "^2.8.0",
     "uuid": "^3.2.1"
   }
