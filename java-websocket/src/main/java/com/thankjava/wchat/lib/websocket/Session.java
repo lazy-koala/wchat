@@ -6,6 +6,7 @@ import org.java_websocket.WebSocket;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.java_websocket.WebSocketImpl;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class Session {
 
     static Logger logger = LoggerFactory.getLogger((Session.class));
 
-    private static final Map<String, WebSocket> aliveConnection = new HashMap<>();
+    private static final Map<String, WebSocket> aliveConnection = new ConcurrentHashMap<>();
 
 //    static {
 //
@@ -58,7 +59,6 @@ public class Session {
         WebSocket currConn = aliveConnection.get(sessionId);
         if (currConn != null) {
             currConn.close();
-            currConn = null;
         }
         aliveConnection.remove(sessionId);
     }

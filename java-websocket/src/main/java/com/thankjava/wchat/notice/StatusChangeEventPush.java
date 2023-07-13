@@ -14,7 +14,7 @@ import java.util.List;
 
 public class StatusChangeEventPush {
 
-    private FriendRelationMapper friendRelationMapper = new FriendRelationMapperImpl();
+    private final FriendRelationMapper friendRelationMapper = new FriendRelationMapperImpl();
     static Logger logger = LoggerFactory.getLogger(StatusChangeEventPush.class);
 
     public void pushOnline(MsgPushContext<OnlinePush> msgPushContext) {
@@ -30,7 +30,7 @@ public class StatusChangeEventPush {
             WSUtil.sendMsg(msgPushContext);
             WSUtil.closeConn(msgPushContext.getToUserId().concat(";/notice/event"));
         } catch (Exception e) {
-
+            // ignore
         }
 
     }

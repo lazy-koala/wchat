@@ -4,5 +4,5 @@ import com.thankjava.wchat.lib.websocket.entity.VerifiedConnection;
 
 public interface OnConnCloseListener {
 
-    void doProcess(VerifiedConnection verifiedConnection);
+    void doProcess(VerifiedConnection<?> verifiedConnection);
 }

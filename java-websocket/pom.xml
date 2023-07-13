@@ -14,8 +14,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <fast-toolkit.version>1.1.5</fast-toolkit.version>
-        <java.websocket.version>1.4.0</java.websocket.version>
-        <fastjson.version>1.2.62</fastjson.version>
+        <java.websocket.version>1.5.3</java.websocket.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <org.slf4j.version>1.7.30</org.slf4j.version>
         <ch.qos.logback.version>1.2.3</ch.qos.logback.version>
         <redis.clients.version>2.9.0</redis.clients.version>

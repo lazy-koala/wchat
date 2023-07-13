@@ -28,9 +28,9 @@ public class BasicWebSocket extends WebSocketServer {
     static Logger logger = LoggerFactory.getLogger(BasicWebSocket.class);
 
     // 验证WebSocket连接 初始链接数据信息
-    private ConnectionVerifyListener connectionVerifyListener;
-    private OnMessageListener onMessageListener;
-    private OnConnCloseListener onConnCloseListener;
+    private final ConnectionVerifyListener connectionVerifyListener;
+    private final OnMessageListener onMessageListener;
+    private final OnConnCloseListener onConnCloseListener;
 
     public BasicWebSocket(int port, ConnectionVerifyListener connectionVerifyListener, OnMessageListener onMessageListener, OnConnCloseListener onConnCloseListener) {
         super(new InetSocketAddress(port));
@@ -45,7 +45,7 @@ public class BasicWebSocket extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        VerifiedConnection verifiedConnection = connectionVerifyListener.doProcess(handshake);
+        VerifiedConnection<?> verifiedConnection = connectionVerifyListener.doProcess(handshake);
         if (verifiedConnection == null) {
             throw new RuntimeException("ConVerifyResult can not be null");
         }
@@ -68,7 +68,7 @@ public class BasicWebSocket extends WebSocketServer {
         if (conn == null) {
             return;
         }
-        VerifiedConnection verifiedConnection = conn.<VerifiedConnection>getAttachment();
+        VerifiedConnection<?> verifiedConnection = conn.<VerifiedConnection>getAttachment();
         if (verifiedConnection == null) {
             return;
         }
@@ -79,7 +79,7 @@ public class BasicWebSocket extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        VerifiedConnection verifiedConnection = conn.getAttachment();
+        VerifiedConnection<?> verifiedConnection = conn.getAttachment();
         if (verifiedConnection == null) {
             conn.close(1008,"Verify Failed");
             return;
@@ -101,8 +101,8 @@ public class BasicWebSocket extends WebSocketServer {
     @Override
     public void onStart() {
         try {
-            Class clazz = Class.forName("com.thankjava.wchat.lib.websocket.core.WSImpl");
-            Constructor constructor = clazz.getDeclaredConstructors()[0];
+            Class<?> clazz = Class.forName("com.thankjava.wchat.lib.websocket.core.WSImpl");
+            Constructor<?> constructor = clazz.getDeclaredConstructors()[0];
             constructor.setAccessible(true);
             ReflectUtil.setFiledVal(WSUtil.class, "ws", constructor.newInstance());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {

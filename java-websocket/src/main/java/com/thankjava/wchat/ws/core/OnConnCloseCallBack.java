@@ -15,18 +15,18 @@ import org.slf4j.LoggerFactory;
 
 public class OnConnCloseCallBack implements OnConnCloseListener {
 
-    private StatusChangeEventPush statusChangeEventPush = new StatusChangeEventPush();
+    private final StatusChangeEventPush statusChangeEventPush = new StatusChangeEventPush();
 
-    private static Logger logger = LoggerFactory.getLogger(OnConnCloseCallBack.class);
+    private static final Logger logger = LoggerFactory.getLogger(OnConnCloseCallBack.class);
 
     // 离线推送做delay时间控制
-    private static ThreadTask threadTask = new ThreadTask(50);
+    private static final ThreadTask threadTask = new ThreadTask(50);
 
     // 延时时间
     final int delayTime = 3;
 
     @Override
-    public void doProcess(VerifiedConnection verifiedConnection) {
+    public void doProcess(VerifiedConnection<?> verifiedConnection) {
         logger.debug("connection closed: sessionId = {} , path = {}", verifiedConnection.getSessionId(), verifiedConnection.getPath());
         if ("/notice/event".equals(verifiedConnection.getPath())) {
 

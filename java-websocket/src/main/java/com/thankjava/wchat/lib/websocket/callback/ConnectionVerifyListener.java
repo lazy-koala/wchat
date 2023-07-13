@@ -15,6 +15,6 @@ public interface ConnectionVerifyListener {
      * @param handshake
      * @return
      */
-    VerifiedConnection doProcess(ClientHandshake handshake);
+    VerifiedConnection<?> doProcess(ClientHandshake handshake);
 
 }

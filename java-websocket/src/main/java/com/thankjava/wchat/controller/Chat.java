@@ -24,8 +24,8 @@ import java.util.List;
 @WSController(path = "chat")
 public class Chat {
 
-    private ChatEventPush chatEventPush = new ChatEventPush();
-    private FriendRelationMapper friendRelationMapper = new FriendRelationMapperImpl();
+    private final ChatEventPush chatEventPush = new ChatEventPush();
+    private final FriendRelationMapper friendRelationMapper = new FriendRelationMapperImpl();
 
     @WSProcess(path = "send_msg")
     public void sendMsg(RequestContext ctx) {

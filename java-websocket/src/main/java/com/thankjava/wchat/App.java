@@ -21,7 +21,7 @@ public class App {
 
     static Logger logger = LoggerFactory.getLogger(App.class);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         int port = 80;
         Properties properties = new Properties();
@@ -29,7 +29,7 @@ public class App {
             FileReader fileReader = new FileReader("./config/system.properties");
             properties.load(fileReader);
             fileReader.close();
-            port = Integer.valueOf(properties.getProperty("websocket.port"));
+            port = Integer.parseInt(properties.getProperty("websocket.port"));
         } catch (Exception e) {
             // ignore
         }
@@ -46,8 +46,6 @@ public class App {
             try {
                 webSocketServer.stop();
                 logger.debug("server shutdown");
-            } catch (IOException e) {
-                e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
