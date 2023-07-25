@@ -9,7 +9,7 @@ public enum CookieName {
         this.code = code;
     }
 
-    public String code;
+    public final String code;
 
 
 }
