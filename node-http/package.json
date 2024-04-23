@@ -14,7 +14,7 @@
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "md5": "^2.2.1",
-    "mongoose": "5.7.5",
+    "mongoose": "5.13.20",
     "nodemailer": "^4.6.8",
     "redis": "^2.8.0",
     "uuid": "^3.2.1"
